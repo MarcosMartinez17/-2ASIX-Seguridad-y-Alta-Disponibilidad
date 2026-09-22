@@ -3,7 +3,7 @@ Resumen: Como conectamos Ubuntu y Metasploitable
 Para que las dos máquinas virtuales pudieran hablar entre sí de forma privada, hicimos lo siguiente:
 
 1. VirtualBox
-   - Le pusimos un segundo "cable de red" virtual a cada máquina (Ubuntu y Metasploitable).
+   - Le pusimos un segundo cable de red  a cada máquina .
    - Les pusimos el mismo nombre a las dos para que supieran que están conectadas a la misma red privada.
 
 2. Configurar Ubuntu:
@@ -15,6 +15,23 @@ Para que las dos máquinas virtuales pudieran hablar entre sí de forma privada,
 4. Comprobación:
    - Probamos ping desde Ubuntu hacia Metasploitable y vimos que se respondían perfectamente, lo que significa que ya están conectadas.
 
+Punto 6:
+
+Resumen de vulnerabilidades detectadas
+
+| Severidad | Cantidad |
+| :--- | :--- |
+| Critical | 9 |
+| High | 3 |
+| Medium | 30 |
+| Low | 8 |
+| Info | 140 |
+
+Cuáles tienen una puntuación CVSS más alta:
+Las vulnerabilidades con la puntuación CVSS más alta son las de nivel crítico, alcanzando una puntuación de 10 como el servicio VNC 
+
+
+Punto 7:
 
 | Vulnerabilidad | Severidad / CVSS | Origen (diseño / implementación / uso) | Breve descripción |
 | :--- | :--- | :--- | :--- |
