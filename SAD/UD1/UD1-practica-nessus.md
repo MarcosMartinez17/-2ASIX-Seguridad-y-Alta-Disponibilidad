@@ -38,3 +38,10 @@ Punto 7:
 | SSL Version 2 and 3 Protocol Detection | Crítica / 9.8 | Diseño | El fallo viene de cómo se ideó y diseñó el protocolo en su origen con problemas criptográficos estructurales, permitiendo ataques de intermediario. |
 | SSL DROWN Attack Vulnerability | Media / 5.9 | Implementación | El fallo es un error concreto en la forma en la que el código del software implementó el soporte para SSLv2, permitiendo descifrar el tráfico con claves débiles. |
 | SSL Anonymous Cipher Suites Supported | Baja / 5.9 | Uso | Se debe a una mala configuración o a dejar activadas por defecto opciones inseguras, permitiendo cifrados anónimos que no comprueban la identidad. |
+
+Punto 8:
+
+Que es: Son las cerraduras de seguridad antiguas que usan los programas para proteger la información. Como son de hace muchos años tienen fallos de diseño muy grandes y ya no sirven para proteger nada
+Como se explota: Un pirata informático que este en la misma red se coloca en medio de la comunicación, obliga al ordenador a usar esas cerraduras viejas y débiles, y así consigue leer y robar todos los datos privados.
+Como se mitiga: Entrar en la configuración y apagar por completo esas cerraduras antiguas (SSL 2 y SSL 3) para usar otras modernas y seguras que no se puedan romper tan fácil.
+Referencia: Plugin de Nessus ID 20007 (SSL Version 2 and 3 Protocol Detection).
