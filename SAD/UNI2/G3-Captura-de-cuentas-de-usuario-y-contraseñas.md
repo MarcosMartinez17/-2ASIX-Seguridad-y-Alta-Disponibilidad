@@ -27,32 +27,38 @@ GRUPO 4
 ## 2. DNS spoofing
 
 ### Qué es
+consiste en falsificar la direccion ip, haciendo de que viene algo de una fuente confiable
 
 ### Cómo se lleva a cabo
+pq toda cabecera tiene ip y destino, entonces el atacante la cambia usando una ip falsa pero que parezca que sea igual
 
 ### Qué categoría(s) de amenaza compromete
+Autenticidad
 
 ### Ejemplo o caso real
+Consiguio saber una ip de confianza, la falsifico, monto un paquete cambia el origen y caundo el usuario ve el mensaje acepte y le entre al servidor
 
 ### Medida de prevención
+Supervidion de firewall
+Filtrado de paquetes
 
 ### Fuente
-
+Grupo 1
 
 ## 3. IP spoofing
 
 ### Qué es
-
+es un ciberataque donde se alteran los registros de un servidor o el cache dns paar redirigir a los usuarios hacia paginaa web falsas
 ### Cómo se lleva a cabo
-
+el atacante introduce datos fslsos en el cache de un servidor dns o intercepta la consulta para devolver una ip fraudalenta
 ### Qué categoría(s) de amenaza compromete
-
+Conficiealidad
 ### Ejemplo o caso real
-
+Hackearon una aerolinea que en vez de que salga la pagina web salia una foto de un lagarto
 ### Medida de prevención
-
+Un servidor DNS SSL
 ### Fuente
-
+Grupo 2
 
 ## 4. Captura de cuentas de usuario y contraseñas
 
