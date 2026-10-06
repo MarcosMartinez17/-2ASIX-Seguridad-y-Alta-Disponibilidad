@@ -68,6 +68,56 @@ solo tengo que dejar el puerto 80 y el 22, los demas tengo que cerrarlos,
 pero tengo que saber donde esta el servicio, saber si se arranca cuando se inicia el sistema, 
 si es el xinte o el inet y ir cerrando para que no se vuelva a abrir
 
+sudo netstat -tulpn | grep ':21'
+sudo nmap -sV -p 21 <IP_DE_LA_MAQUINA>
+ El comando netstat muestra que el puerto 21 está a la escucha (LISTEN), pero su dueño no es un programa de FTP propio, sino el portero 4490/xinetd (es un servicio a demanda). Nmap detecta el servicio como ftp (vsftpd).   
+
+## Puerto 21
+1. IDENTIFICA
+
+msfadmin@metasploitable:~$ sudo netstat -tulpn | grep ':21'
+msfadmin@metasploitable:~$ sudo nmap -sV -p 21 192.168.1.101
+
+ El comando netstat muestra que el puerto 21 está a la escucha (LISTEN), pero su dueño no es un programa de FTP propio, sino el portero 4490/xinetd (es un servicio a demanda). Nmap detecta el servicio como ftp (vsftpd).   
+
+Paso 2: AVERIGUA
+msfadmin@metasploitable:~$ ls /etc/init.d/ | grep -i ftp
+proftpd
+msfadmin@metasploitable:~$ ls /etc/rc2.d/ | grep -i ftp
+S50proftpd
+msfadmin@metasploitable:~$ grep -i servertype /etc/proftpd/proftpd.conf
+ServerType                      standalone
+
+Paso 3: Pararlo
+msfadmin@metasploitable:~$ sudo /etc/init.d/proftpd stop
+ * Stopping ftp server proftpd
+   ...done.
+msfadmin@metasploitable:~$ sudo netstat -tulpn | grep 21
+tcp        0      0 0.0.0.0:21              0.0.0.0:*               LISTEN      4490/xinetd
+
+el resultado de tu netstat aunque has parado el servicio proftpd, el puerto 21 sigue abierto porque lo tiene el portero 4490/xinetd
+
+Paso 4: Impedir que vuelva:
+msfadmin@metasploitable:~$ ls /etc/xinetd.d/
+chargen  daytime  discard  echo  time  vsftpd
+msfadmin@metasploitable:~$ sudo sed -i 's/disable.*/disable = yes/' /etc/xinetd.d/vsftpd
+sudo /etc/init.d/xinetd reload
+
+Paso 5: comprobar
+msfadmin@metasploitable:~$ sudo nmap -sV -p 21 192.168.1.101
+Starting Nmap 4.53 ( http://insecure.org ) at 2026-10-05 14:27 EDT
+Interesting ports on 192.168.1.101:
+PORT   STATE  SERVICE VERSION
+21/tcp closed ftp
+
+## Puero 23 
+
+
+
+   
+
+
+
 
 
 ## Reflexión
