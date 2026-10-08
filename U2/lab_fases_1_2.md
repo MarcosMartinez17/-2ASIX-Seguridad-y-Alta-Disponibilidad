@@ -72,6 +72,9 @@ sudo netstat -tulpn | grep ':21'
 sudo nmap -sV -p 21 <IP_DE_LA_MAQUINA>
  El comando netstat muestra que el puerto 21 está a la escucha (LISTEN), pero su dueño no es un programa de FTP propio, sino el portero 4490/xinetd (es un servicio a demanda). Nmap detecta el servicio como ftp (vsftpd).   
 
+## Puerto 21, 23, 25, 53, 111, 139 y 445, 512, 513 y 514, 1099, 1524, 2049, 2121, 3306, 3632, 5432, 5900 y 6000, 6667 y 6697, 8009 y 8180, 8787,  69, 137 y 138.
+
+
 ## Puerto 21
 1. IDENTIFICA
 
@@ -110,7 +113,7 @@ Interesting ports on 192.168.1.101:
 PORT   STATE  SERVICE VERSION
 21/tcp closed ftp
 
-## Puerto 23,  Hecho
+
 ## Puero 25 
 1- Identifica
 msfadmin@metasploitable:~$ sudo netstat -tulpn | grep ':25'
@@ -209,27 +212,115 @@ msfadmin@metasploitable:~$ sudo reboot
 ## Puerto 111
 
 1- Identifica
+sudo netstat -tulpn | grep ':111'
+<img width="942" height="150" alt="image" src="https://github.com/user-attachments/assets/b23cfcb1-abc6-46fb-8de7-64a574f513d6" />
+
+sudo nmap -sV -p 111 192.168.1.101
+<img width="436" height="52" alt="image" src="https://github.com/user-attachments/assets/846aaf81-831d-40fc-9085-eb4e67f19db4" />
 
 2- Averigua
+ls /etc/init.d/ | grep -i portmap
+ls /etc/rc2.d/ | grep -i portmap
+<img width="678" height="120" alt="image" src="https://github.com/user-attachments/assets/72b4fe4f-4d64-4a02-9ff1-8108980655ad" />
 
 3- Pararlo
+sudo /etc/init.d/portmap stop
+<img width="648" height="58" alt="image" src="https://github.com/user-attachments/assets/62f4a346-4067-4007-ae69-6e711a8b7f05" />
+ya no aparece
 
 4- impedir
+sudo update-rc.d -f portmap remove
+ls /etc/rc2.d/ | grep -i portmap
+<img width="675" height="242" alt="image" src="https://github.com/user-attachments/assets/86065464-de3c-40b1-ad31-867b7e952dae" />
 
 5- Verificar 
-
-## Puerto 
+<img width="726" height="127" alt="image" src="https://github.com/user-attachments/assets/92fb8a23-25ea-4aa9-ae59-5d2555a93f02" />
+sudo reboot
+## Puerto 139 y 445 
 
 1- Identifica
+sudo netstat -tulpn | grep -E ':139|:445'
+<img width="927" height="93" alt="image" src="https://github.com/user-attachments/assets/68fddf24-6f69-4b67-a5c9-e683dac55b5e" />
+2- Averigua
+ls /etc/init.d/ | grep -i samba
+ls /etc/rc2.d/ | grep -i samba
+<img width="647" height="88" alt="image" src="https://github.com/user-attachments/assets/80a44b9c-d1fe-42ad-b9b4-fb9807f454ff" />
+
+3- Pararlo
+sudo /etc/init.d/samba stop
+sudo netstat -tulpn | grep -E ':139|:445'
+<img width="725" height="70" alt="image" src="https://github.com/user-attachments/assets/be05478a-fa7c-43e5-a614-4eae378d05ae" />
+
+4- impedir
+sudo update-rc.d -f samba remove
+ls /etc/rc2.d/ | grep -i samba
+<img width="643" height="202" alt="image" src="https://github.com/user-attachments/assets/eb390589-f873-4cee-88b4-8cb5fe5c188f" />
+
+5- Verificar 
+sudo netstat -tulpn | grep -E ':139|:445'
+sudo nmap -sV -p 139,445 192.168.1.101
+sudo reboot
+<img width="743" height="167" alt="image" src="https://github.com/user-attachments/assets/200929ef-e4fe-4382-89b8-0da6d5c78c6d" />
+
+## Puerto 512 513 514
+1- Identifica
+sudo netstat -tulpn | grep -E ':512|:513|:514'
+<img width="962" height="141" alt="image" src="https://github.com/user-attachments/assets/c8032586-278c-417d-83f7-4e92fe9c3779" />
+sudo nmap -sV -p 512,513,514 192.168.1.101
+<img width="776" height="210" alt="image" src="https://github.com/user-attachments/assets/4aba8a98-9c4e-4c14-9779-fdfd5669a231" />
+2- Averigua
+ls -l /etc/init.d/xinetd
+cat /etc/xinetd.conf
+<img width="812" height="342" alt="image" src="https://github.com/user-attachments/assets/052420c3-7390-4c15-ae76-eeb800293fab" />
+3- Pararlo
+sudo nano /etc/xinetd.conf
+Busca las secciones de exec, login y shell, y pon disable = yes
+<img width="973" height="488" alt="image" src="https://github.com/user-attachments/assets/7b413afd-e668-4727-84ea-a4b49d2437be" />
+
+<img width="590" height="242" alt="image" src="https://github.com/user-attachments/assets/9ef8cd1e-1760-42a3-9046-960b4af348eb" />
+sudo grep -E 'exec|login|shell' /etc/inetd.conf /etc/xinetd.conf 2>/dev/null
+<img width="951" height="190" alt="image" src="https://github.com/user-attachments/assets/abd356df-b28d-461f-8263-b8160d88ea3a" />
+
+Encontramos su ubicacion real:
+sudo sed -i 's/^shell/#shell/' /etc/inetd.conf
+sudo sed -i 's/^login/#login/' /etc/inetd.conf
+sudo sed -i 's/^exec/#exec/' /etc/inetd.conf
+
+
+4- impedir
+<img width="961" height="388" alt="image" src="https://github.com/user-attachments/assets/4af47ca5-bcce-46a1-a60c-6f893a9ffcb8" />
+
+5- Verificar 
+<img width="767" height="65" alt="image" src="https://github.com/user-attachments/assets/2e9ab9fb-f47c-41c5-9c2a-f6da685c42de" />
+
+
+## Puertos 1099 (rmiregistry) y 1524 (bindshell)
+1- Identifica
+sudo netstat -tulpn | grep -E ':1099|:1524'
+sudo nmap -sV -p 1099,1524 192.168.1.101
+<img width="943" height="243" alt="image" src="https://github.com/user-attachments/assets/40b38013-0923-4778-9356-34c36229d005" />
 
 2- Averigua
 
 3- Pararlo
 
 4- impedir
+sudo grep 1524 /etc/inetd.conf /etc/xinetd.conf 2>/dev/null
+ls /etc/rc2.d/ | grep -i metasploit
+
+para este servicio, el puerto 1099 (RMI Registry) suele levantarse asociado a alguna aplicación de Java o de forma manual.
+Para matarlo directamente y comprobar que desaparece
+sudo kill -9 4600
+sudo netstat -tulpn | grep ':1099'
+<img width="737" height="71" alt="image" src="https://github.com/user-attachments/assets/7045fbce-5e42-43f4-a34b-52dc5ab4ad99" />
+
 
 5- Verificar 
+sudo netstat -tulpn | grep -E ':1099|:1524'
+sudo nmap -sV -p 1099,1524 192.168.1.101
+<img width="747" height="178" alt="image" src="https://github.com/user-attachments/assets/6553ea63-1495-47d6-909d-b8563cc1683f" />
 
+<img width="966" height="212" alt="image" src="https://github.com/user-attachments/assets/74b0df4f-0582-4153-8492-fc05693c5f72" />
 
 
 
