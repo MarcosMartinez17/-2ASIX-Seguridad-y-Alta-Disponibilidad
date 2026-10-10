@@ -323,9 +323,23 @@ sudo nmap -sV -p 1099,1524 192.168.1.101
 <img width="966" height="212" alt="image" src="https://github.com/user-attachments/assets/74b0df4f-0582-4153-8492-fc05693c5f72" />
 
 
+ ## Contramedida 2 — Bloquear el ping (obligatoria
+sudo iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+Este comando bloquea las solicitudes de ping que llegan a Metasploitable.
 
+2. Comprobar que se ha aplicado
+<img width="970" height="152" alt="image" src="https://github.com/user-attachments/assets/fa3ade65-3fed-40d9-a5f4-68bc8b42d04a" />
 
-   
+tORRENT-AUDITOR
+<img width="735" height="256" alt="image" src="https://github.com/user-attachments/assets/55c7374d-1ff9-447b-9fb0-a02ffe739dc2" />
+
+## B4. Medición DESPUÉS
+
+sudo nmap -sV -Pn 192.168.56.2 -oN despues.txt
+He añadido -Pn porque hemos bloqueado el ping. Así Nmap intentará escanear los puertos aunque Metasploitable no responda al descubrimiento de hosts.
+
+<img width="863" height="280" alt="image" src="https://github.com/user-attachments/assets/67c76e3d-018b-4c34-bb8e-9296b26723be" />
+
 
 
 
