@@ -333,12 +333,27 @@ Este comando bloquea las solicitudes de ping que llegan a Metasploitable.
 tORRENT-AUDITOR
 <img width="735" height="256" alt="image" src="https://github.com/user-attachments/assets/55c7374d-1ff9-447b-9fb0-a02ffe739dc2" />
 
+<img width="775" height="162" alt="image" src="https://github.com/user-attachments/assets/6776e26e-7d1c-45f6-abef-6fe29fce6942" />
+
+
 ## B4. Medición DESPUÉS
 
 sudo nmap -sV -Pn 192.168.56.2 -oN despues.txt
 He añadido -Pn porque hemos bloqueado el ping. Así Nmap intentará escanear los puertos aunque Metasploitable no responda al descubrimiento de hosts.
 
-<img width="863" height="280" alt="image" src="https://github.com/user-attachments/assets/67c76e3d-018b-4c34-bb8e-9296b26723be" />
+<img width="842" height="368" alt="image" src="https://github.com/user-attachments/assets/6e519600-4e78-4e67-a923-07429a2f348b" />
+
+diff
+<img width="890" height="817" alt="image" src="https://github.com/user-attachments/assets/827e9307-8e27-4b19-95df-d8e840ac7f21" />
+<img width="908" height="415" alt="image" src="https://github.com/user-attachments/assets/fb9fd7f8-b5a9-4c7a-849f-ba62c5afa0fb" />
+
+TABLA COMPARATIVA — CONTRAMEDIDAS EN METASPLOITABLE
+
+| Aspecto | Antes | Contramedida aplicada | Después |
+|:--|:--|:--|:--|
+| **Puertos abiertos** | 23 puertos abiertos | Reglas de `iptables` que permiten únicamente TCP 22 y 80 y bloquean el resto del tráfico entrante | **2 puertos abiertos:** 22 (SSH) y 80 (HTTP). Los otros 998 puertos TCP analizados aparecen filtrados. |
+| **Servicios/versiones visibles** | 23 servicios detectados, entre ellos FTP, Telnet, Samba, MySQL, SSH y HTTP | Filtrado de conexiones entrantes a los servicios no autorizados | **Solo SSH y HTTP:** OpenSSH 4.7p1 y Apache httpd 2.2.8 |
+| **Respuesta al ping** | No comprobada en el escaneo inicial | Bloqueo ICMP con iptables | No responde (100% de pérdida) |
 
 
 
