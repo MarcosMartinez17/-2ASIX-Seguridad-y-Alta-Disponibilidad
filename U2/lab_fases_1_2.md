@@ -355,6 +355,22 @@ TABLA COMPARATIVA — CONTRAMEDIDAS EN METASPLOITABLE
 | **Servicios/versiones visibles** | 23 servicios detectados, entre ellos FTP, Telnet, Samba, MySQL, SSH y HTTP | Filtrado de conexiones entrantes a los servicios no autorizados | **Solo SSH y HTTP:** OpenSSH 4.7p1 y Apache httpd 2.2.8 |
 | **Respuesta al ping** | No comprobada en el escaneo inicial | Bloqueo ICMP con iptables | No responde (100% de pérdida) |
 
+## Reflexión
+B5. Preguntas finales
+
+1. ¿Qué contramedida ha reducido más lo que ve el atacante? ¿Por qué?
+El bloqueo de puertos mediante iptables porque no permite el ping
+
+3. Si solo ocultáis un banner pero el servicio sigue activo, ¿la vulnerabilidad sigue ahí? Razona la respuesta.
+Si, porque ocultar el banner solo impide ver información sobre el servicio, pero no elimina sus vulnerabilidades
+
+4. Torrent-Vulnerable usa un sistema operativo sin soporte desde hace años. ¿Puede una contramedida de estas sustituir a actualizarlo? ¿Qué harías en una empresa real?
+   
+No, porque estas medidas reducen los riesgos, pero no solucionan las vulnerabilidades del sistema. En una empresa real actualizaría el sistema operativo a una versión con soporte y aplicaría los parches de seguridad
+
+6. De todas las contramedidas de las partes A y B, ¿cuáles evitan que el atacante encuentre información y cuáles solo ayudan a detectar que lo están intentando?
+   
+Las que evitan obtener información son el bloqueo de puertos, el bloqueo del ping y la ocultación de banners. Las que ayudan a detectar ataques son la monitorización, los registros de actividad y los sistemas de detección de intrusiones
 
 
 
