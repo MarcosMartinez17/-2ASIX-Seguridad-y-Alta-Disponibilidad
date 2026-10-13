@@ -21,3 +21,5 @@
 | **Parásito informático** | Programa malicioso que se une a otros archivos y se propaga cuando se ejecutan. |
 | **Pharming** | Ataque que redirige al usuario a páginas falsas para robar información. |
 | **Phishing** | Engaño mediante correos, mensajes o páginas falsas para conseguir contraseñas y datos personales. |
+
+rabbt, riskware, rootkit, scumware, spam,spyware, pop_ups, worms
