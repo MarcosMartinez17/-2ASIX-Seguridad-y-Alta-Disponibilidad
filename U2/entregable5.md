@@ -29,6 +29,7 @@
 | **Spyware** | Programa espía que recopila y roba información confidencial en secreto. |
 | **Pop-ups** | Ventanas emergentes intrusivas usadas para publicidad no deseada o engaños. |
 | **Worms** | Gusanos que se autorreplican y propagan rápidamente por la red de forma autónoma. |
+| **bomba logica** | fragmento de código malicioso oculto dentro de un programa, sistema operativo o red, que permanece inactivo hasta que se cumple una condición preprogramada específica para ejecutar un daño |
 
  ## Parte B · Clasificar amenazas
 
