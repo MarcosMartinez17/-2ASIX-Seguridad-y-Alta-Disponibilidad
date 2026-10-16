@@ -35,7 +35,7 @@
 
  | # | Incidente en Torrent | Tipo | ¿Se replica solo? | ¿Necesita al usuario? |
 | :---: | :--- | :--- | :---: | :---: |
-| **1** | Un socio abre `factura_marzo.pdf.exe`; poco después todo el disco compartido está cifrado y aparece un mensaje pidiendo 800 € | **Ransomware** | No | Sí |
+| **1** | Un socio abre `factura_marzo.pdf.exe`; poco después todo el disco compartido está cifrado y aparece un mensaje pidiendo 800 € | **Troyano, Ransomware** | No | Sí |
 | **2** | Un "optimizador gratuito" de PC que, además, envía todo lo que se teclea a un servidor externo | **Keylogger** | No | Sí |
 | **3** | Sin que nadie haga nada, un programa salta de portátil en portátil a través de la wifi del estudio | **Gusano** | Sí | No |
 | **4** | Al abrir ciertos ejecutables, éstos infectan a su vez a otros ficheros del equipo | **Virus** | No | Sí |
