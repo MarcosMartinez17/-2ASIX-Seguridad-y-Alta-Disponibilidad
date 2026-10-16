@@ -454,10 +454,10 @@ El análisis forense también contribuye a comprender el alcance de los incident
 
 ## UNIDAD 1 PRACTICA
 
-## 16. Práctica: clasificación de vulnerabilidades detectadas con Nessus (captura 1)
+## 13. Práctica: clasificación de vulnerabilidades detectadas con Nessus (captura 1)
 <img width="1508" height="492" alt="image" src="https://github.com/user-attachments/assets/3fc2199d-a341-41a6-810a-31d162a7102f" />
 
-### 16.1. Qué significa cada columna
+### 13.1. Qué significa cada columna
 
 - **Vulnerabilidad:** el fallo o debilidad que se ha detectado.
 - **Severidad:** indica cuánto daño podría causar y ayuda a establecer prioridades de corrección.
@@ -471,13 +471,11 @@ El análisis forense también contribuye a comprender el alcance de los incident
 **Tramos habituales de CVSS:** 0 = ninguna; 0,1–3,9 = baja; 4,0–6,9 = media; 7,0–8,9 = alta; 9,0–10,0 = crítica. La puntuación describe gravedad técnica, no es por sí sola todo el riesgo de una empresa.
 ---
 
-## 17. Práctica: cinco niveles de clasificación de la información (captura 2)
+## 14. Práctica: cinco niveles de clasificación de la información (captura 2)
 
 <img width="1451" height="688" alt="image" src="https://github.com/user-attachments/assets/07214496-3436-4e80-805f-9724b7e853b6" />
 
-> **Origen:** segunda captura, del caso «Estudio Torrent». Es una **clasificación interna de documentos según su sensibilidad**. Estos cinco niveles pertenecen al ejercicio mostrado; no hay que confundirlos con las puntuaciones CVSS ni presentarlos como una escala universal obligatoria para todas las empresas.
-
-### 17.1. Qué significa cada nivel
+### 14.1. Qué significa cada nivel
 
 | Nivel | Nombre | Explicación sencilla | Ejemplo de uso |
 |---|---|---|---|
@@ -489,37 +487,14 @@ El análisis forense también contribuye a comprender el alcance de los incident
 
 **Diferencia entre niveles:** conforme se sube de nivel, la información es más sensible y se requiere un control de acceso más estricto.
 
-### 17.2. Explicación de los siete ejemplos de Estudio Torrent
-
-1. **Catálogo de servicios de la web → 1, Uso público.** Es la lista de servicios de la empresa que se anuncia para captar clientes; que otros la vean es normal.
-2. **Correo interno sobre el calendario de vacaciones → 2, Difusión limitada.** Es información de organización interna; no debería difundirse a cualquiera, aunque normalmente no es tan delicada como una factura o una contraseña.
-3. **Facturas emitidas a clientes → 3, Confidencial.** Contienen datos de personas o empresas, importes y relaciones comerciales; solo debe acceder personal autorizado.
-4. **Contraseña de acceso al ERP → 4, Reservada.** Es una credencial de entrada a un sistema esencial de gestión y su robo puede facilitar accesos indebidos.
-5. **Planos de la vivienda de un cliente en el disco compartido → 4, Reservada.** Pueden revelar detalles privados de una propiedad; la filtración puede afectar a la intimidad y a la seguridad del cliente.
-6. **Informe de auditoría de Nessus → 4, Reservada.** Identifica fallos y sistemas vulnerables; un atacante podría utilizar esa información para preparar intrusiones.
-7. **Conversación de los socios sobre una oferta de compra del estudio → 5, Secreta.** Se refiere a una decisión estratégica cuya divulgación podría perjudicar seriamente la negociación.
-
-### 17.3. Términos de esta actividad
-
-- **ERP (Enterprise Resource Planning):** programa de gestión que integra procesos como facturación, compras, ventas y recursos de la empresa.
-- **Credencial:** dato o elemento que sirve para demostrar identidad o acceder, como una contraseña.
-- **Factura:** documento que registra una operación económica y puede incluir datos de clientes e importes.
-- **Disco compartido:** almacenamiento al que acceden varias personas por red. **Compartido no significa que todos deban tener permiso para todo.**
-- **Informe de auditoría de vulnerabilidades:** documento que reúne fallos detectados, su gravedad y, normalmente, recomendaciones para corregirlos.
-- **Secreto comercial:** información no pública cuyo valor para la empresa depende, en parte, de mantenerla reservada.
-
-**Cómo acertar en el examen:** pregunta «¿quién necesita conocer esto?» y «¿qué pasaría si se filtrase?». Cuanto mayor sea el perjuicio potencial, mayor nivel de protección debes justificar.
-
 ---
 
-## 18. Práctica: origen, amenaza, tipo físico/lógico y CID (captura 3)
+## 15. Práctica: origen, amenaza, tipo físico/lógico y CID (captura 3)
 
 <img width="1362" height="407" alt="image" src="https://github.com/user-attachments/assets/4984dbbb-cd28-4509-aaaa-e29ed4e41ff7" />
 
 
-> **Origen:** tercera captura y actividad relacionada con la página 21 del temario. La captura está cortada; aquí se explican **todas las filas visibles**, sin inventar las que no aparecen.
-
-### 18.1. Significado de las columnas
+### 15.1. Significado de las columnas
 
 | Columna | Qué hay que escribir |
 |---|---|
@@ -529,44 +504,251 @@ El análisis forense también contribuye a comprender el alcance de los incident
 | **Física / Lógica** | Si afecta al **entorno físico** (personas, papeles, equipos) o a los **accesos y datos informáticos**; a veces empieza físicamente y termina en un acceso lógico. |
 | **C-I-D afectada** | Qué principio queda comprometido: **confidencialidad**, **integridad** o **disponibilidad**. Puede haber más de uno. |
 
-### 18.2. Filas visibles, explicadas una por una
+## UNIDAD 2 Teoria
 
-| Vulnerabilidad | ¿Qué es o qué sucede? | Origen | Amenaza | Física/lógica | CID afectada |
-|---|---|---|---|---|---|
-| **Contraseña en un post-it** | La clave está escrita en un papel visible. | **Uso:** mala práctica del usuario. | Alguien lee la clave y la utiliza. | **Física → lógica:** lee el papel y luego puede entrar al sistema. | **Confidencialidad**, porque la clave y posiblemente la información quedan expuestas. |
-| **Ordenadores sin bloquear** | Se deja una sesión abierta al ausentarse. | **Uso:** no se bloquea el equipo. | Alguien aprovecha la sesión abierta para acceder o modificar datos. | **Física → lógica:** se acerca al ordenador y utiliza la sesión. | **Confidencialidad e integridad** si puede leer o modificar. |
-| **Pantallas visibles** | Personas ajenas pueden ver los datos mostrados en el monitor. | **Uso:** ubicación o utilización inadecuada. | Un tercero observa información privada (*shoulder surfing*). | **Física:** observación directa de pantalla. | **Confidencialidad**. |
-| **Documentos encima de las mesas** | Papeles con información interna quedan accesibles. | **Uso:** falta de custodia de documentos. | Alguien lee o se lleva papeles. | **Física**. | **Confidencialidad**; también podrían afectarse otros principios si fueran alterados o destruidos. |
-| **Estanterías con documentos** | Documentos almacenados a la vista o al alcance de personas no autorizadas. | **Uso:** almacenamiento sin protección suficiente. | Una persona consulta o sustrae documentos. | **Física**. | **Confidencialidad**. |
+## 1. Ataques y contramedidas (diapositivas 3-6)
 
-### 18.3. Conceptos adicionales para no confundirse
+- **Amenaza:** escenario en el que una acción o un suceso, deliberado o accidental, puede comprometer la seguridad de un sistema.
+- **Ataque:** realización o materialización de una amenaza.
+- **Contramedida:** medida que se emplea para impedir, detectar o reducir los efectos de un ataque.
 
-- **Post-it:** nota adhesiva; el problema no es el papel, sino tener en él una contraseña accesible.
-- **Equipo bloqueado:** requiere volver a autenticarse antes de continuar. Cerrar una sesión o bloquearla reduce el riesgo de uso por terceros.
-- **Shoulder surfing:** mirar una pantalla o un teclado ajeno para obtener información.
-- **Confidencialidad:** se rompe cuando alguien **consulta o conoce información sin permiso**.
-- **Integridad:** se rompe cuando alguien **modifica los datos sin autorización**.
-- **Disponibilidad:** se rompe cuando no puedes **usar el sistema o acceder a la información cuando lo necesitas**.
+### ¿Qué propiedades se pueden atacar?
 
-### 18.4. Método para resolver ejercicios de clasificación
+| Tipo de incidente | ¿Qué ocurre? | Propiedad afectada |
+|---|---|---|
+| **Interceptación** | Alguien obtiene información sin autorización. | **Confidencialidad** |
+| **Modificación** | Alguien cambia información o mensajes. | **Integridad** |
+| **Fabricación** | Alguien crea datos o comunicaciones falsos. | **Autenticidad** |
+| **Interrupción** | Un recurso o servicio deja de estar disponible. | **Disponibilidad** |
 
-1. **Lee la situación:** ¿qué está mal hecho o qué es inseguro?
-2. **Indica el origen:** diseño (se concibió mal), implementación (se construyó mal) o uso (se utiliza/configura mal).
-3. **Especifica la amenaza:** no escribas simplemente «hacker»; explica la acción concreta, como «un visitante lee una contraseña».
-4. **Indica si la amenaza es física o lógica:** una intrusión presencial que luego deriva en acceso informático puede ser **física → lógica**.
-5. **Marca CID:** lectura sin permiso → C; modificación → I; caída o pérdida de acceso → D.
-6. **Justifica con una frase:** «Afecta a la confidencialidad porque permite conocer información privada».
-
-### 18.5. Ejemplos extra de entrenamiento (creados para practicar)
-
-| Situación | Origen probable | Tipo | Principio afectado |
-|---|---|---|---|
-| El firewall está desactivado por descuido. | Uso. | Lógica. | Puede comprometer C, I y/o D, según el ataque. |
-| Un empleado modifica una factura sin permiso. | No se puede establecer solo con esa frase: puede ser un abuso de permisos o un fallo de control. | Lógica. | Integridad. |
-| Se corta la electricidad y un servidor se apaga. | No se conoce la vulnerabilidad concreta: faltaría evaluar el sistema de alimentación. | Física. | Disponibilidad. |
-| Se permite el acceso a un protocolo de red diseñado sin autenticación adecuada. | Diseño. | Lógica. | Autenticidad y, según el caso, confidencialidad. |
+**Motivaciones de los atacantes:** económicas, ideológicas, diversión y autorrealización (demostrar sus capacidades).
 
 ---
+
+## 2. Clasificación de los ataques (diapositivas 7-11)
+
+### Ataques pasivos
+
+El atacante **observa, escucha, registra o intercepta** información, pero **no cambia los datos ni el flujo de comunicación**.
+
+- Objetivos: obtener información y analizar el tráfico de red.
+- Son difíciles de detectar porque no provocan alteraciones visibles.
+- **Contramedida destacada:** cifrado de la información
+
+### Ataques activos
+
+El atacante **modifica, fabrica o interrumpe** mensajes o servicios.
+
+Categorías incluidas en el tema:
+
+1. **Suplantación de identidad:** hacerse pasar por otro usuario, sistema o servicio.
+2. **Re-actuación (replay):** volver a transmitir una comunicación previamente capturada.
+3. **Modificación de mensajes:** alterar el contenido transmitido.
+4. **Degradación o denegación de servicio:** impedir o dificultar que el servicio funcione.
+
+Otras clasificaciones: **internos / externos** (según el origen) y **estructurados / no estructurados** (según la complejidad).
+
+| Ataque pasivo | Ataque activo |
+|---|---|
+| Observa o captura información. | Cambia mensajes, identidades o recursos. |
+| No altera el tráfico. | Puede alterar o interrumpir el tráfico. |
+| Difícil de detectar. | Puede provocar efectos visibles. |
+| Ejemplo: sniffing. | Ejemplo: modificación de mensajes o DoS. |
+
+### Ataques concretos citados en los apuntes
+
+- Reconocimiento de sistemas y detección de vulnerabilidades.
+- Interceptación y modificación de comunicaciones.
+- **SMTP spoofing:** suplantación relacionada con el correo electrónico.
+- **DNS spoofing:** falsificación de información o respuestas del sistema de nombres DNS.
+- **IP spoofing:** falsificación de una dirección IP de origen.
+- Robo de cuentas y contraseñas.
+- Alteración del tráfico y de las tablas de enrutamiento.
+- Conexión no autorizada a equipos.
+- Introducción de virus, troyanos y gusanos.
+- **XSS** e **inyección SQL**, que la diapositiva enumera junto a ataques con malware.
+- Ataques contra sistemas criptográficos; fraudes y extorsiones.
+- **DoS:** denegación de servicio.
+- **DDoS:** denegación de servicio distribuida (desde múltiples orígenes).
+
+**Aclaración de estudio:** XSS y la inyección SQL son técnicas de ataque a aplicaciones; no son, por sí mismas, tipos de programa malicioso.
+
+---
+
+## 3. Las cinco fases de un ataque informático (diapositivas 12-17)
+
+**Orden que debes memorizar:**
+
+1. **Reconocimiento (Reconnaissance):** recoger información pública o accesible sobre la víctima u organización.
+2. **Exploración (Scanning):** investigar sistemas, direcciones IP, nombres de host, puertos y posibles vulnerabilidades.
+3. **Obtener acceso (Gaining Access):** aprovechar una debilidad o técnica para entrar al sistema.
+4. **Mantener el acceso (Maintaining Access):** asegurar que el atacante pueda volver a entrar, por ejemplo mediante puertas traseras.
+5. **Borrar huellas (Covering Tracks):** intentar ocultar la intrusión y eliminar indicios para no ser detectado.
+
+**Truco:** **Investigar → Escanear → Entrar → Permanecer → Ocultarse**.
+
+| Fase | Qué busca el atacante | Ejemplo |
+|---|---|---|
+| Reconocimiento | Datos sobre el objetivo. | Consultar información pública del dominio. |
+| Exploración | Descubrir equipos, puertos y fallos. | Escanear puertos. |
+| Acceso | Entrar en el sistema. | Aprovechar un servicio vulnerable. |
+| Persistencia | Poder volver a entrar. | Crear una puerta trasera. |
+| Borrado | Ocultar su actividad. | Manipular o borrar registros. |
+
+---
+
+## 4. Contramedidas en cada fase (diapositivas 18-24)
+
+### Fases 1 y 2: reconocimiento y exploración
+
+**Técnicas citadas:** ingeniería social, *trashing* (basureo), *sniffing*, mapeadores de red y escáneres de puertos/vulnerabilidades.
+
+**Herramientas para revisar qué información se expone:**
+
+| Herramienta | Para qué sirve |
+|---|---|
+| `whois` | Consultar datos publicados sobre un dominio o dirección IP. |
+| `nslookup` | Consultar información y registros DNS. |
+| `nmap` | Explorar hosts, puertos y servicios. |
+| Wireshark / TCPDump / WinDump | Observar y analizar paquetes de red. |
+| Snort | Detectar tráfico sospechoso mediante un IDS. |
+
+**Medidas:** reducir la información publicada en DNS/WHOIS; filtrar paquetes y ciertas consultas ICMP; configurar cortafuegos y ACL; instalar IDS; revisar tráfico y alertas. Las diapositivas citan `iptables` (Linux), ACL de routers Cisco y herramientas de captura y monitorización.
+
+### Fase 3: obtener acceso
+
+**Riesgos:** vulnerabilidades, contraseñas débiles o robadas, servicios mal configurados, troyanos y puertas traseras.
+
+**Medidas:**
+
+- Actualizar el software.
+- Exigir contraseñas robustas.
+- Revisar la configuración de los servicios.
+- Desactivar servicios innecesarios o peligrosos.
+- Configurar routers y cortafuegos.
+- Realizar auditorías, filtrar paquetes y revisar los logs.
+
+### Fase 4: mantener acceso o persistencia
+
+**Riesgos:** creación de cuentas privilegiadas, instalación de *backdoors*, *rootkits* o troyanos, y cambios en los logs.
+
+**Medidas:**
+
+- Guardar copias de los logs **fuera del equipo que los genera**.
+- Usar funciones **hash** para detectar modificaciones en ficheros de sistema.
+- Aplicar filtrado, sistemas IDS y comprobación periódica de registros.
+- Monitorizar logs; el PDF menciona Swatch y Logcheck en Ubuntu.
+
+### Fase 5: borrado de huellas
+
+El atacante intenta limpiar registros y ocultar herramientas o señales de intrusión.
+
+**Medidas:** conservar históricos, monitorizar la red y los equipos y controlar el software instalado.
+
+**Conceptos clave:**
+- **Log:** registro de sucesos y actividades del sistema.
+- **IDS:** sistema de detección de intrusiones.
+- **ACL:** lista de control de acceso, permite definir qué tráfico o acceso se autoriza.
+- **Hash:** valor que permite comprobar si un archivo ha cambiado.
+
+---
+
+## 5. Herramientas utilizadas en ataques (diapositivas 26-27)
+
+| Herramienta | Qué hace |
+|---|---|
+| **Escáner de puertos** | Averigua qué puertos y servicios están disponibles. |
+| **Sniffer** | Captura paquetes que circulan por una red. |
+| **Exploit** | Aprovecha una vulnerabilidad conocida. |
+| **Backdoor kit** | Facilita un acceso oculto o una «puerta trasera». |
+| **Rootkit** | Oculta componentes o mecanismos de acceso del atacante. |
+| **Auto-rooter** | Automatiza fases de exploración, explotación y acceso. |
+| **Password cracker** | Trata de averiguar contraseñas. |
+| **Herramientas de spoofing** | Facilitan la suplantación de datos de identificación, como una IP. |
+| **Herramientas de cifrado del atacante** | Pueden ocultar las comunicaciones de un sistema comprometido. |
+
+También se citan generadores de virus y otro software malicioso.
+
+---
+
+## 6. Malware y entorno sandbox (diapositiva 28)
+
+**Malware:** software creado con el objetivo de infiltrarse o dañar un ordenador o sistema de información sin el consentimiento de su propietario.
+
+El tema cita virus, gusanos, troyanos, puertas traseras y *adware* entre otros.
+
+**Sandbox o caja de arena:** entorno aislado utilizado para analizar programas sospechosos. Su objetivo es que lo que ocurre dentro del entorno de prueba no afecte al sistema exterior.
+
+---
+
+## 7. Análisis estático frente a dinámico (diapositivas 29-30)
+
+| **Análisis estático** | **Análisis dinámico** |
+|---|---|
+| Estudia el código o ejecutable **sin ejecutarlo**. | **Ejecuta** el programa en un entorno controlado. |
+| Busca instrucciones o comportamientos potencialmente maliciosos. | Observa procesos, conexiones y consecuencias de la ejecución. |
+| Puede exigir mucha especialización. | Los apuntes lo presentan como más rápido y práctico. |
+| No necesita activar la muestra. | Emplea entornos aislados, incluidas máquinas virtuales. |
+
+**Pregunta típica:** ¿qué análisis utiliza máquinas virtuales para observar el comportamiento del malware? **El dinámico.**
+
+---
+
+## 8. Programas antimalware (diapositiva 31)
+
+Se describen dos funciones principales:
+
+1. **Protección en tiempo real:** analizar datos que llegan de la red y bloquear amenazas detectadas.
+2. **Detección y eliminación:** analizar el registro de Windows, archivos, memoria y programas ya instalados; mostrar amenazas y permitir eliminarlas.
+
+El antivirus ayuda contra software malicioso, pero no evita automáticamente todos los fraudes o engaños humanos (por ejemplo, entregar voluntariamente una contraseña a un impostor).
+
+---
+
+## 9. Medidas de protección (diapositivas 32-33)
+
+1. Mantener el **sistema operativo y navegador actualizados**.
+2. Utilizar **antivirus y cortafuegos** actualizados.
+3. Trabajar con una **cuenta de usuario sin privilegios administrativos**; usar administrador solo cuando sea necesario.
+4. Desconfiar de programas descargados de Internet y soportes extraíbles de origen desconocido.
+5. Evitar software de procedencia incierta, como determinadas descargas por redes P2P.
+6. Restringir la ejecución de scripts y tecnologías del navegador según el nivel de confianza de las páginas.
+7. Usar **contraseñas robustas** frente a ataques de diccionario.
+8. Hacer **copias de seguridad periódicas**.
+
+---
+
+## 10. Clasificación y vocabulario de malware (diapositivas 34-35)
+
+Las dos últimas diapositivas **enumeran**, pero **no desarrollan individualmente**, estos términos:
+
+- Adware, Backdoor, Bomba Fork, Bots, Bug, Caballo de Troya, Cookies, Crackers, Cryptovirus/Ransomware.
+- Exploits, Hijacker, Hoax/Joke/Bulo, Keystroke/Keylogger, Ladilla virtual, Leapfrog, Parásito informático, Pharming y Phishing.
+- Rabbit/conejos, Riskware, Rootkit, Scumware, Spam, Spyware, Pop-ups/ventanas emergentes y Worms/gusanos.
+
+**Aclaraciones de apoyo (no desarrolladas en esas diapositivas):**
+
+| Término destacado | Definición breve para estudiar |
+|---|---|
+| **Virus** | Código malicioso que infecta otros archivos o programas. |
+| **Gusano (worm)** | Malware que puede propagarse entre sistemas. |
+| **Troyano** | Programa malicioso que se presenta como algo legítimo. |
+| **Ransomware** | Malware que bloquea o cifra datos y exige un rescate. |
+| **Spyware** | Software que espía y recopila información del usuario. |
+| **Keylogger** | Herramienta que registra pulsaciones de teclado. |
+| **Adware** | Software asociado a la visualización de publicidad. |
+| **Rootkit** | Conjunto de herramientas para ocultar componentes o actividad maliciosa. |
+| **Backdoor** | Método oculto para acceder o volver a entrar en un sistema. |
+| **Bot** | Programa que realiza tareas automáticas; puede ser usado con fines maliciosos. |
+| **Phishing** | Fraude de suplantación para obtener datos; **no es necesariamente malware**. |
+| **Spam** | Mensajes no solicitados; **no implica necesariamente malware**. |
+| **Hoax o bulo** | Mensaje o información engañosa; **no es por sí mismo un programa malicioso**. |
+
+
+
+---
+
+
 
 
 
