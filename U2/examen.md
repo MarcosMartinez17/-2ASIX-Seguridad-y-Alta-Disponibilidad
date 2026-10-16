@@ -452,10 +452,123 @@ El análisis forense también contribuye a comprender el alcance de los incident
 
 ---
 
-
-
-
 ## UNIDAD 1 PRACTICA
+
+## 16. Práctica: clasificación de vulnerabilidades detectadas con Nessus (captura 1)
+<img width="1508" height="492" alt="image" src="https://github.com/user-attachments/assets/3fc2199d-a341-41a6-810a-31d162a7102f" />
+
+### 16.1. Qué significa cada columna
+
+- **Vulnerabilidad:** el fallo o debilidad que se ha detectado.
+- **Severidad:** indica cuánto daño podría causar y ayuda a establecer prioridades de corrección.
+- **CVSS (Common Vulnerability Scoring System):** sistema habitual para puntuar la gravedad de una vulnerabilidad entre **0 y 10**. Cuanto mayor sea la puntuación, mayor es la gravedad evaluada según ese sistema.
+- **Origen (diseño / implementación / uso):** fase o circunstancia que explica el problema:
+  - **Diseño:** el protocolo o la arquitectura ya nació con debilidades.
+  - **Implementación:** falla la manera en que se desarrolló o implementó una función.
+  - **Uso:** alguien configura, administra o utiliza mal un sistema.
+- **Breve descripción:** explicación sencilla de cómo funciona el fallo y de qué permite hacer a un atacante.
+
+**Tramos habituales de CVSS:** 0 = ninguna; 0,1–3,9 = baja; 4,0–6,9 = media; 7,0–8,9 = alta; 9,0–10,0 = crítica. La puntuación describe gravedad técnica, no es por sí sola todo el riesgo de una empresa.
+---
+
+## 17. Práctica: cinco niveles de clasificación de la información (captura 2)
+
+<img width="1451" height="688" alt="image" src="https://github.com/user-attachments/assets/07214496-3436-4e80-805f-9724b7e853b6" />
+
+> **Origen:** segunda captura, del caso «Estudio Torrent». Es una **clasificación interna de documentos según su sensibilidad**. Estos cinco niveles pertenecen al ejercicio mostrado; no hay que confundirlos con las puntuaciones CVSS ni presentarlos como una escala universal obligatoria para todas las empresas.
+
+### 17.1. Qué significa cada nivel
+
+| Nivel | Nombre | Explicación sencilla | Ejemplo de uso |
+|---|---|---|---|
+| **1** | **Uso público** | Información destinada a cualquier persona; se puede publicar. | Catálogo de servicios de la web. |
+| **2** | **Difusión limitada** | Información para un grupo concreto, normalmente interno; no está pensada para publicarse, pero su divulgación tendría un impacto pequeño. | Calendario de vacaciones en un correo interno. |
+| **3** | **Confidencial** | Información privada o empresarial cuya consulta debe limitarse a personal autorizado. | Facturas de clientes. |
+| **4** | **Reservada** | Información especialmente sensible; una filtración podría causar daños graves en privacidad, seguridad o funcionamiento. | Contraseña de ERP, planos privados, informe de vulnerabilidades. |
+| **5** | **Secreta** | Información estratégica de máxima sensibilidad en el caso; una filtración puede perjudicar gravemente a la empresa. | Negociación confidencial de venta del estudio. |
+
+**Diferencia entre niveles:** conforme se sube de nivel, la información es más sensible y se requiere un control de acceso más estricto.
+
+### 17.2. Explicación de los siete ejemplos de Estudio Torrent
+
+1. **Catálogo de servicios de la web → 1, Uso público.** Es la lista de servicios de la empresa que se anuncia para captar clientes; que otros la vean es normal.
+2. **Correo interno sobre el calendario de vacaciones → 2, Difusión limitada.** Es información de organización interna; no debería difundirse a cualquiera, aunque normalmente no es tan delicada como una factura o una contraseña.
+3. **Facturas emitidas a clientes → 3, Confidencial.** Contienen datos de personas o empresas, importes y relaciones comerciales; solo debe acceder personal autorizado.
+4. **Contraseña de acceso al ERP → 4, Reservada.** Es una credencial de entrada a un sistema esencial de gestión y su robo puede facilitar accesos indebidos.
+5. **Planos de la vivienda de un cliente en el disco compartido → 4, Reservada.** Pueden revelar detalles privados de una propiedad; la filtración puede afectar a la intimidad y a la seguridad del cliente.
+6. **Informe de auditoría de Nessus → 4, Reservada.** Identifica fallos y sistemas vulnerables; un atacante podría utilizar esa información para preparar intrusiones.
+7. **Conversación de los socios sobre una oferta de compra del estudio → 5, Secreta.** Se refiere a una decisión estratégica cuya divulgación podría perjudicar seriamente la negociación.
+
+### 17.3. Términos de esta actividad
+
+- **ERP (Enterprise Resource Planning):** programa de gestión que integra procesos como facturación, compras, ventas y recursos de la empresa.
+- **Credencial:** dato o elemento que sirve para demostrar identidad o acceder, como una contraseña.
+- **Factura:** documento que registra una operación económica y puede incluir datos de clientes e importes.
+- **Disco compartido:** almacenamiento al que acceden varias personas por red. **Compartido no significa que todos deban tener permiso para todo.**
+- **Informe de auditoría de vulnerabilidades:** documento que reúne fallos detectados, su gravedad y, normalmente, recomendaciones para corregirlos.
+- **Secreto comercial:** información no pública cuyo valor para la empresa depende, en parte, de mantenerla reservada.
+
+**Cómo acertar en el examen:** pregunta «¿quién necesita conocer esto?» y «¿qué pasaría si se filtrase?». Cuanto mayor sea el perjuicio potencial, mayor nivel de protección debes justificar.
+
+---
+
+## 18. Práctica: origen, amenaza, tipo físico/lógico y CID (captura 3)
+
+<img width="1362" height="407" alt="image" src="https://github.com/user-attachments/assets/4984dbbb-cd28-4509-aaaa-e29ed4e41ff7" />
+
+
+> **Origen:** tercera captura y actividad relacionada con la página 21 del temario. La captura está cortada; aquí se explican **todas las filas visibles**, sin inventar las que no aparecen.
+
+### 18.1. Significado de las columnas
+
+| Columna | Qué hay que escribir |
+|---|---|
+| **Vulnerabilidad** | La debilidad concreta observada: por ejemplo, «ordenador sin bloquear». |
+| **Origen** | **Diseño, implementación o uso**: de dónde procede esa debilidad. |
+| **Amenaza que la explota** | La acción que aprovecharía el fallo: leer datos, robar documentos, cambiar archivos, etc. |
+| **Física / Lógica** | Si afecta al **entorno físico** (personas, papeles, equipos) o a los **accesos y datos informáticos**; a veces empieza físicamente y termina en un acceso lógico. |
+| **C-I-D afectada** | Qué principio queda comprometido: **confidencialidad**, **integridad** o **disponibilidad**. Puede haber más de uno. |
+
+### 18.2. Filas visibles, explicadas una por una
+
+| Vulnerabilidad | ¿Qué es o qué sucede? | Origen | Amenaza | Física/lógica | CID afectada |
+|---|---|---|---|---|---|
+| **Contraseña en un post-it** | La clave está escrita en un papel visible. | **Uso:** mala práctica del usuario. | Alguien lee la clave y la utiliza. | **Física → lógica:** lee el papel y luego puede entrar al sistema. | **Confidencialidad**, porque la clave y posiblemente la información quedan expuestas. |
+| **Ordenadores sin bloquear** | Se deja una sesión abierta al ausentarse. | **Uso:** no se bloquea el equipo. | Alguien aprovecha la sesión abierta para acceder o modificar datos. | **Física → lógica:** se acerca al ordenador y utiliza la sesión. | **Confidencialidad e integridad** si puede leer o modificar. |
+| **Pantallas visibles** | Personas ajenas pueden ver los datos mostrados en el monitor. | **Uso:** ubicación o utilización inadecuada. | Un tercero observa información privada (*shoulder surfing*). | **Física:** observación directa de pantalla. | **Confidencialidad**. |
+| **Documentos encima de las mesas** | Papeles con información interna quedan accesibles. | **Uso:** falta de custodia de documentos. | Alguien lee o se lleva papeles. | **Física**. | **Confidencialidad**; también podrían afectarse otros principios si fueran alterados o destruidos. |
+| **Estanterías con documentos** | Documentos almacenados a la vista o al alcance de personas no autorizadas. | **Uso:** almacenamiento sin protección suficiente. | Una persona consulta o sustrae documentos. | **Física**. | **Confidencialidad**. |
+
+### 18.3. Conceptos adicionales para no confundirse
+
+- **Post-it:** nota adhesiva; el problema no es el papel, sino tener en él una contraseña accesible.
+- **Equipo bloqueado:** requiere volver a autenticarse antes de continuar. Cerrar una sesión o bloquearla reduce el riesgo de uso por terceros.
+- **Shoulder surfing:** mirar una pantalla o un teclado ajeno para obtener información.
+- **Confidencialidad:** se rompe cuando alguien **consulta o conoce información sin permiso**.
+- **Integridad:** se rompe cuando alguien **modifica los datos sin autorización**.
+- **Disponibilidad:** se rompe cuando no puedes **usar el sistema o acceder a la información cuando lo necesitas**.
+
+### 18.4. Método para resolver ejercicios de clasificación
+
+1. **Lee la situación:** ¿qué está mal hecho o qué es inseguro?
+2. **Indica el origen:** diseño (se concibió mal), implementación (se construyó mal) o uso (se utiliza/configura mal).
+3. **Especifica la amenaza:** no escribas simplemente «hacker»; explica la acción concreta, como «un visitante lee una contraseña».
+4. **Indica si la amenaza es física o lógica:** una intrusión presencial que luego deriva en acceso informático puede ser **física → lógica**.
+5. **Marca CID:** lectura sin permiso → C; modificación → I; caída o pérdida de acceso → D.
+6. **Justifica con una frase:** «Afecta a la confidencialidad porque permite conocer información privada».
+
+### 18.5. Ejemplos extra de entrenamiento (creados para practicar)
+
+| Situación | Origen probable | Tipo | Principio afectado |
+|---|---|---|---|
+| El firewall está desactivado por descuido. | Uso. | Lógica. | Puede comprometer C, I y/o D, según el ataque. |
+| Un empleado modifica una factura sin permiso. | No se puede establecer solo con esa frase: puede ser un abuso de permisos o un fallo de control. | Lógica. | Integridad. |
+| Se corta la electricidad y un servidor se apaga. | No se conoce la vulnerabilidad concreta: faltaría evaluar el sistema de alimentación. | Física. | Disponibilidad. |
+| Se permite el acceso a un protocolo de red diseñado sin autenticación adecuada. | Diseño. | Lógica. | Autenticidad y, según el caso, confidencialidad. |
+
+---
+
+
 
 ## UNIDAD 2 PRACTICA
 <img width="917" height="661" alt="image" src="https://github.com/user-attachments/assets/64e9a634-0787-4b54-991f-56dbe19fd9a1" />
