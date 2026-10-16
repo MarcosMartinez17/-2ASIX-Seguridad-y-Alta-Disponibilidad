@@ -504,6 +504,198 @@ El análisis forense también contribuye a comprender el alcance de los incident
 | **Física / Lógica** | Si afecta al **entorno físico** (personas, papeles, equipos) o a los **accesos y datos informáticos**; a veces empieza físicamente y termina en un acceso lógico. |
 | **C-I-D afectada** | Qué principio queda comprometido: **confidencialidad**, **integridad** o **disponibilidad**. Puede haber más de uno. |
 
+## Resumen – Cómo leer un vector CVSS
+
+## 1. ¿Qué es CVSS?
+
+**CVSS (Common Vulnerability Scoring System)** es un estándar para puntuar la **gravedad de una vulnerabilidad** del 0 al 10. Se utiliza en herramientas como **Nessus**.
+
+| Puntuación | Severidad |
+|---|---|
+| 9.0 – 10.0 | Crítica |
+| 7.0 – 8.9 | Alta |
+| 4.0 – 6.9 | Media |
+| 0.1 – 3.9 | Baja |
+| 0.0 | Informativa / ninguna |
+
+La nota tiene en cuenta dos preguntas:
+
+1. **¿Qué tan fácil es explotar la vulnerabilidad?**
+2. **¿Qué tan grave puede ser el daño?**
+
+Un daño muy grande no implica siempre una nota crítica: si es difícil ejecutar el ataque, la puntuación puede ser menor.
+
+---
+
+## 2. Las ocho métricas de CVSS v3
+
+| Sigla | Nombre en inglés | ¿Qué significa? |
+|---|---|---|
+| **AV** | Attack Vector | Desde dónde se puede atacar. |
+| **AC** | Attack Complexity | Qué dificultad tiene el ataque. |
+| **PR** | Privileges Required | Qué permisos necesita ya el atacante. |
+| **UI** | User Interaction | Si otra persona debe intervenir. |
+| **S** | Scope | Si el impacto alcanza otros componentes bajo otra autoridad de seguridad. |
+| **C** | Confidentiality | Cuánto afecta a la confidencialidad. |
+| **I** | Integrity | Cuánto afecta a la integridad. |
+| **A** | Availability | Cuánto afecta a la disponibilidad. |
+
+### AV — Vector de ataque
+
+| Valor | Significado |
+|---|---|
+| **N** (Network) | Se puede atacar de forma remota, por red. |
+| **A** (Adjacent) | Requiere estar en una red adyacente (por ejemplo, misma Wi-Fi o VLAN). |
+| **L** (Local) | Requiere acceso local al equipo o una sesión en él. |
+| **P** (Physical) | Requiere acceso físico al dispositivo. |
+
+### AC — Complejidad del ataque
+
+- **L (Low):** complejidad baja; no necesita condiciones especiales.
+- **H (High):** complejidad alta; requiere condiciones especiales o difíciles.
+
+### PR — Privilegios necesarios
+
+- **N (None):** ningún permiso o cuenta previa.
+- **L (Low):** permisos de usuario normal.
+- **H (High):** permisos elevados, como administrador.
+
+### UI — Interacción del usuario
+
+- **N (None):** no necesita la acción de otra persona.
+- **R (Required):** necesita que una víctima haga algo, como hacer clic o abrir un archivo.
+
+### S — Alcance
+
+- **U (Unchanged):** el impacto se queda bajo la misma autoridad de seguridad del componente vulnerable.
+- **C (Changed):** alcanza recursos fuera de esa autoridad de seguridad.
+
+### C, I y A — Impacto en la seguridad
+
+- **C (Confidentiality):** ¿cuánta información puede leer el atacante?
+- **I (Integrity):** ¿cuánto puede modificar el atacante?
+- **A (Availability):** ¿cuánto puede interrumpir el servicio?
+
+Las tres usan los mismos valores:
+
+| Valor | Significado |
+|---|---|
+| **N (None)** | Sin impacto. |
+| **L (Low)** | Impacto parcial o limitado. |
+| **H (High)** | Impacto alto. |
+
+**Ojo:** `C` en `S:C` significa *Changed*, mientras que `C` al comienzo de `C:H` es *Confidentiality*.
+
+---
+
+## 3. Ejemplo resuelto: Samba Badlock
+
+**Vulnerabilidad:** CVE-2016-2118  
+**Puntuación indicada en la guía:** **7.5 (Alta)**
+
+```text
+CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H
+```
+
+| Parte | Interpretación |
+|---|---|
+| `AV:N` | Se ataca por red. |
+| `AC:H` | La explotación es compleja; necesita condiciones especiales, como interceptar tráfico. |
+| `PR:N` | No se necesitan credenciales previas. |
+| `UI:R` | Requiere interacción, por ejemplo una sesión cliente-servidor en curso. |
+| `S:U` | El alcance no cambia. |
+| `C:H` | Impacto alto en confidencialidad. |
+| `I:H` | Impacto alto en integridad. |
+| `A:H` | Impacto alto en disponibilidad. |
+
+**¿Por qué no es crítica si C, I y A son altos?**  
+Porque `AC:H` y `UI:R` hacen más difícil que el ataque tenga éxito. CVSS valora **tanto el impacto como la explotabilidad**.
+
+---
+
+## 4. Métricas temporales (opcionales)
+
+| Sigla | Qué indica |
+|---|---|
+| **E** (Exploit Code Maturity) | Si existe un método conocido y funcional para explotar la vulnerabilidad. |
+| **RL** (Remediation Level) | Si existe parche, solución temporal o alternativa. |
+| **RC** (Report Confidence) | La confianza en el informe sobre la vulnerabilidad. |
+
+Ejemplo de vector temporal:
+
+```text
+CVSS:3.0/E:U/RL:O/RC:C
+```
+
+**Según la guía:** no necesitas memorizar todos sus valores; basta con reconocer para qué sirven.
+
+---
+
+## 5. Diferencias entre CVSS v2 y v3
+
+| CVSS v2 | CVSS v3 |
+|---|---|
+| Emplea `Au` para autenticación. | Separa **PR** (privilegios) y **UI** (interacción del usuario). |
+| No incluye **Scope**. | Incluye la métrica **S**. |
+| Impacto: None / Partial / Complete. | Impacto: None / Low / High. |
+
+Si Nessus muestra puntuaciones v2 y v3 para una misma vulnerabilidad, **no significa que haya un error**: usan métricas diferentes.
+
+---
+
+## 6. Cómo resolver un ejercicio de CVSS
+
+Cuando te den un vector, léelo **en este orden**:
+
+1. **¿Cómo se llega hasta la vulnerabilidad?** → `AV` + `AC`.
+2. **¿Qué necesita el atacante o la víctima?** → `PR` + `UI`.
+3. **¿Qué se rompe y hasta dónde llega el daño?** → `S` + `C/I/A`.
+
+**Regla para memorizar:** `AV – AC – PR – UI – S – C – I – A`.
+
+---
+
+## 7. Preguntas rápidas de repaso
+
+**1. ¿Qué significa `AV:N`?**  
+Ataque por red.
+
+**2. ¿Qué significa `PR:N`?**  
+No requiere privilegios o credenciales previas.
+
+**3. ¿Qué representa `UI:R`?**  
+El ataque necesita una interacción de otro usuario.
+
+**4. ¿Qué indica `C:H/I:H/A:N`?**  
+Impacto alto en confidencialidad e integridad, sin impacto en disponibilidad.
+
+**5. ¿Qué significa `AC:H`?**  
+La explotación tiene una complejidad alta.
+
+**6. ¿Qué diferencia existe entre `S:U` y `S:C`?**  
+En `S:U` el impacto no cambia de ámbito de seguridad; en `S:C` sí lo hace.
+
+**7. ¿Qué nota es una vulnerabilidad CVSS 5.9?**  
+**Media**, porque pertenece al rango 4.0–6.9.
+
+---
+
+## 8. Chuleta final para el examen
+
+- **CVSS:** puntuación de gravedad del **0 al 10**.
+- **9.0–10.0:** crítica; **7.0–8.9:** alta; **4.0–6.9:** media; **0.1–3.9:** baja.
+- **AV:** desde dónde se ataca.
+- **AC:** dificultad del ataque.
+- **PR:** privilegios previos necesarios.
+- **UI:** interacción necesaria de otra persona.
+- **S:** alcance del daño.
+- **C/I/A:** impacto en confidencialidad, integridad y disponibilidad.
+- **Más impacto no siempre significa nota crítica:** también cuenta la dificultad de explotación.
+- **E, RL, RC:** métricas temporales; reconocerlas.
+
+**Lo más importante:** saber interpretar cada parte de un vector CVSS como el ejemplo de Samba Badlock.
+
+
 ## UNIDAD 2 Teoria
 
 ## 1. Ataques y contramedidas (diapositivas 3-6)
@@ -720,11 +912,36 @@ El antivirus ayuda contra software malicioso, pero no evita automáticamente tod
 
 ## 10. Clasificación y vocabulario de malware (diapositivas 34-35)
 
-Las dos últimas diapositivas **enumeran**, pero **no desarrollan individualmente**, estos términos:
+| Tipo | Breve descripción |
+|---|---|
+| **Adware** | Programa que muestra publicidad no deseada en el ordenador. |
+| **Backdoor** | Puerta trasera que permite acceder a un sistema sin autorización. |
+| **Bomba Fork** | Ataque que crea muchos procesos hasta saturar o bloquear el ordenador. |
+| **Bots** | Programas automáticos que pueden ser controlados por un atacante para realizar acciones maliciosas. |
+| **Bug** | Error en un programa que puede provocar fallos o problemas de seguridad. |
+| **Caballo de Troya** | Programa malicioso que se hace pasar por uno legítimo para engañar al usuario. |
+| **Cookies** | Archivos que guardan información de la navegación y pueden utilizarse para rastrear al usuario. |
+| **Crackers** | Personas que vulneran sistemas informáticos para acceder sin permiso, robar información o causar daños. |
+| **Cryptovirus** | Malware que cifra los archivos del usuario para impedir que pueda acceder a ellos. |
+| **Ransomware** | Malware que bloquea archivos o sistemas y exige un rescate para recuperarlos. |
+| **Exploits** | Programas o técnicas que aprovechan vulnerabilidades de seguridad. |
+| **Hijacker** | Programa que modifica la configuración del navegador y redirige a páginas no deseadas. |
+| **Hoax** | Mensaje falso que busca engañar o alarmar al usuario. |
+| **Keystroke** | Programa espía que registra las teclas pulsadas para conseguir contraseñas y datos personales. |
+| **Ladilla virtual** | Malware asociado a descargas o aplicaciones de contenido para adultos. |
+| **Leapfrog** | Programa malicioso que roba datos de acceso y contactos para utilizarlos o propagarse. |
+| **Parásito informático** | Programa malicioso que se une a otros archivos y se propaga cuando se ejecutan. |
+| **Pharming** | Ataque que redirige al usuario a páginas falsas para robar información. |
+| **Phishing** | Engaño mediante correos, mensajes o páginas falsas para conseguir contraseñas y datos personales. |
+| **Rabbit** | Multiplica procesos sin fin hasta agotar los recursos del sistema y bloquearlo. |
+| **Riskware** | Software legítimo con vulnerabilidades que pueden suponer un riesgo de seguridad. |
+| **Rootkit** | Oculta su presencia y otorga acceso y control de administrador al atacante. |
+| **Scumware** | Programas molestos o de dudosa utilidad instalados sin consentimiento claro. |
+| **Spam** | Mensajes masivos y no solicitados (correo basura). |
+| **Spyware** | Programa espía que recopila y roba información confidencial en secreto. |
+| **Pop-ups** | Ventanas emergentes intrusivas usadas para publicidad no deseada o engaños. |
+| **Worms** | Gusanos que se autorreplican y propagan rápidamente por la red de forma autónoma. |
 
-- Adware, Backdoor, Bomba Fork, Bots, Bug, Caballo de Troya, Cookies, Crackers, Cryptovirus/Ransomware.
-- Exploits, Hijacker, Hoax/Joke/Bulo, Keystroke/Keylogger, Ladilla virtual, Leapfrog, Parásito informático, Pharming y Phishing.
-- Rabbit/conejos, Riskware, Rootkit, Scumware, Spam, Spyware, Pop-ups/ventanas emergentes y Worms/gusanos.
 
 **Aclaraciones de apoyo (no desarrolladas en esas diapositivas):**
 
