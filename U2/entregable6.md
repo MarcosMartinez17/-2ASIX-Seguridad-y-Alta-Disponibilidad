@@ -123,3 +123,87 @@ Los archivos pertenecen principalmente a Nessus, aunque también aparece modific
 El símbolo `5` indica que el hash MD5 del archivo no coincide con el registrado por dpkg, mientras que `missing` indica que falta un archivo.
 
 Estos cambios no significan necesariamente que exista malware, pero conviene revisarlos.
+
+
+## Parte C · Verificar una descarga: hash y firma
+Descargaremos un programa pequeño y real, GNU Hello, junto a su firma y la lista de claves de GNU.
+
+## C1. Descarga:
+mkdir -p ~/verif && cd ~/verif
+wget https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz
+wget https://ftp.gnu.org/gnu/hello/hello-2.12.1.tar.gz.sig
+wget https://ftp.gnu.org/gnu/gnu-keyring.gpg
+<img width="430" height="152" alt="image" src="https://github.com/user-attachments/assets/ca495190-4058-478d-bbba-ba2f50aeaea9" />
+<img width="920" height="342" alt="image" src="https://github.com/user-attachments/assets/0fce2ec9-9d2b-483a-9828-c105da47012d" />
+
+<img width="900" height="546" alt="image" src="https://github.com/user-attachments/assets/9501f29e-1049-4ee1-aa4c-15ad88603f2f" />
+<img width="750" height="158" alt="image" src="https://github.com/user-attachments/assets/d37ed490-e9c0-420a-87a4-ab6c8a74ccdd" />
+
+
+
+
+## C2. Calculad el hash:
+
+sha256sum hello-2.12.1.tar.gz
+Comparadlo con vuestro compañero de al lado. ¿Sale igual? Debería.
+<img width="862" height="125" alt="image" src="https://github.com/user-attachments/assets/6ed237ae-67c3-45b2-85ea-6946c9dd6e16" />
+Si tu compañero tiene exactamente el mismo archivo, debería obtener el mismo hash.
+
+
+## C3. Verificad la firma usando la lista de claves de GNU:
+
+gpg --no-default-keyring --keyring ./gnu-keyring.gpg --verify hello-2.12.1.tar.gz.sig hello-2.12.1.tar.gz
+
+Deberíais ver Good signature from .... También saldrá un aviso WARNING: This key is not certified with a trusted signature. Es normal, significa que vosotros no habéis dicho personalmente que esa clave sea de confianza. Anotad:
+Nombre de quien firmó.
+Fecha de la firma.
+Identificador de la clave.
+
+<img width="882" height="255" alt="image" src="https://github.com/user-attachments/assets/e4e7ec44-b23a-4bb9-a033-11bf59fb60d3" />
+
+Resultado
+Resultado	Good signature (firma válida)
+Firmante	Reuben Thomas
+Correo	rrt@sc3d.org
+Fecha	29/05/2022, 23:05 UTC
+Identificador de clave	4C8EF3DA3FD37230
+Huella completa	24093F016FFE8602EF449BB84C8EF3DA3FD37230
+¿Qué significa el aviso WARNING?
+La firma es válida, pero GPG advierte que todavía no hemos confirmado personalmente que la clave pertenezca realmente al firmante.
+
+
+## C4. El experimento: ¿qué pasa si alguien toca el fichero? Haced una copia y añadid un carácter:
+
+cp hello-2.12.1.tar.gz hello-manipulado.tar.gz
+echo "x" >> hello-manipulado.tar.gz
+sha256sum hello-2.12.1.tar.gz hello-manipulado.tar.gz
+cp hello-2.12.1.tar.gz.sig hello-manipulado.tar.gz.sig
+gpg --no-default-keyring --keyring ./gnu-keyring.gpg --verify hello-manipulado.tar.gz.sig hello-manipulado.tar.gz
+
+<img width="870" height="152" alt="image" src="https://github.com/user-attachments/assets/7cbf063c-6fc3-4b5b-a6b4-2f53debf5305" />
+Anotad: ¿cómo cambia el hash? ¿Qué dice ahora gpg? (Debe decir BAD signature.)
+
+Archivo original: hash que empieza por 8d99142a...
+Archivo manipulado: hash que empieza por 8c253f1a...
+<img width="883" height="177" alt="image" src="https://github.com/user-attachments/assets/f50f8f1e-185e-4b29-9ed3-318145158224" />
+
+Al modificar el archivo, su hash SHA-256 cambió completamente. Al verificarlo con GPG apareció BAD signature, indicando que la firma digital ya no coincide con el contenido del archivo. Esto demuestra que las firmas digitales permiten detectar modificaciones.
+
+## C5. Pregunta C: completad:
+| Situación | ¿Basta con el hash? | ¿Hace falta la firma? ¿Por qué? |
+|---|---|---|
+| El fichero se corrompió al descargarlo. | **Sí**, si se compara con un hash original obtenido de una fuente fiable. | **No es imprescindible.** El hash permite detectar si el archivo ha cambiado accidentalmente. |
+| Un atacante cambió el fichero **y** el hash publicado en la misma web. | **No**, porque el atacante también ha falsificado la referencia. | **Sí.** Una firma válida, verificada con la clave pública auténtica del desarrollador, permite detectar la manipulación. |
+| Descargas desde un espejo (*mirror*) que no es de confianza. | **No**, si el hash también procede del espejo y no se puede verificar de forma independiente. | **Sí, es recomendable.** La firma permite comprobar la integridad y el origen del archivo usando una clave pública auténtica. |
+
+**Conclusión:** El hash sirve para comprobar la integridad respecto a una referencia fiable. La firma digital también permite verificar el origen del archivo, siempre que la clave pública sea auténtica.
+
+ ## Parte D · Política de actualizaciones para Torrent
+
+1. Uno de los tres socios será el responsable de supervisar las actualizaciones semanalmente.
+2. Los parches de seguridad críticos se instalarán lo antes posible, después de comprobar su compatibilidad.
+3. Las actualizaciones del servidor de impresión y del ERP se probarán antes y se realizará una copia de seguridad.
+4. Las actualizaciones automáticas solo se permitirán en equipos donde no afecten a servicios importantes.
+5. El software se descargará de repositorios oficiales o fuentes fiables, con autorización del responsable.
+6. Los equipos sin soporte se sustituirán o actualizarán a una versión compatible y, mientras tanto, se aislarán.
+
