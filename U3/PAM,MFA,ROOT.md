@@ -273,6 +273,13 @@ Paso 8. Comprobar que Carlos puede ejecutar la auditoría sin contraseña
 <img width="673" height="50" alt="image" src="https://github.com/user-attachments/assets/8fcd29e7-a523-40a2-b181-9df26426f6ab" />
 
 
+1. ¿Qué riesgo cubre el MFA que una contraseña fuerte no cubre?
+
+Aunque una contraseña sea muy larga y difícil de adivinar, puede ser robada mediante phishing, malware o una filtración de datos.
+El MFA añade una segunda comprobación de identidad. Aunque un atacante consiga la contraseña, también necesitaría el código temporal generado por Google Authenticator para acceder.
+
+
+
 
 
 
