@@ -278,6 +278,20 @@ Paso 8. Comprobar que Carlos puede ejecutar la auditoría sin contraseña
 Aunque una contraseña sea muy larga y difícil de adivinar, puede ser robada mediante phishing, malware o una filtración de datos.
 El MFA añade una segunda comprobación de identidad. Aunque un atacante consiga la contraseña, también necesitaría el código temporal generado por Google Authenticator para acceder.
 
+2. ¿Qué recomienda el NIST sobre la caducidad de contraseñas?
+
+El NIST recomienda no obligar a cambiar las contraseñas periódicamente sin motivo. Hacerlo demasiado a menudo puede provocar que los usuarios utilicen contraseñas fáciles o las apunten en papel.
+
+3. ¿Por qué necesitamos ACL aunque tengamos sudo?
+
+Porque las ACL controlan el acceso a archivos y carpetas, mientras que sudo controla los permisos administrativos.
+Por ejemplo, Víctor puede modificar los planos mediante ACL y gestionar el servicio hmi_planta mediante sudo.
+
+4. ¿Qué ocurre si un usuario pierde su móvil y los códigos de recuperación?
+
+El administrador debe comprobar su identidad, invalidar el segundo factor anterior y configurar uno nuevo.
+Así recupera el acceso sin desactivar MFA para los demás usuarios.
+
 
 
 
