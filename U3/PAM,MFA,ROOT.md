@@ -132,7 +132,45 @@ Comprobar la configuración del grupo MFA:
 <img width="911" height="1017" alt="image" src="https://github.com/user-attachments/assets/741b084b-150c-4859-91ea-4fc335e84772" />
 
 Activar MFA en SSH
+
+Después de configurar PAM y SSH, comprobamos que el servicio se inicia correctamente.
+
 <img width="960" height="512" alt="image" src="https://github.com/user-attachments/assets/f04ae417-a352-4921-96ee-dd62de1c81c4" />
+
+<img width="881" height="463" alt="image" src="https://github.com/user-attachments/assets/74a3b95a-cbb1-434d-97bc-b30646c267f3" />
+El objetivo es comprobar que Carlos debe introducir su contraseña y el código temporal de Google Authenticator para acceder al sistema.
+
+3. Prueba a escribir un código incorrecto y comprueba que la conexión se rechaza.:
+   Carlos contra: Contraseña_Complicada1@
+   <img width="580" height="95" alt="image" src="https://github.com/user-attachments/assets/38952374-3aa1-4065-a18c-26d4205f51c9" />
+
+
+### 2.6 A quién se lo exigimos?
+<img width="788" height="132" alt="image" src="https://github.com/user-attachments/assets/1c394556-b0d7-410c-9945-4288c0cb5adb" />
+
+Explicación:
+- getent group mfa: comprueba que existe el grupo MFA.
+- id carlos: comprueba que Carlos pertenece a supervisores y mfa.
+- id linux: comprueba que el administrador no pertenece al grupo mfa.
+
+Paso 2. Comprobar la configuración de PAM
+<img width="966" height="92" alt="image" src="https://github.com/user-attachments/assets/0cd3e73a-da03-46fd-b14f-a974d3257ccd" />
+
+¿Qué significa?
+- common-auth: comprueba la contraseña.
+- pam_succeed_if.so: comprueba la pertenencia al grupo mfa.
+- pam_google_authenticator.so: exige el código temporal a los usuarios del grupo.
+
+Paso 3. Comprobar SSH para los dos usuarios
+<img width="957" height="111" alt="image" src="https://github.com/user-attachments/assets/f7b0e7a2-cafd-4742-9f5d-28626dab0581" />
+
+La primera línea corresponde a Carlos y la segunda a Linux.
+Esto demuestra que Carlos debe pasar por la autenticación interactiva de PAM, mientras que Linux conserva su configuración habitual
+
+
+
+
+   
 
 
 
