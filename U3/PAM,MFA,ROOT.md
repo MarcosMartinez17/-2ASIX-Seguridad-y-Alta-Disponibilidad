@@ -1,4 +1,4 @@
-## Parte 1 — Contraseñas robustas con PAM
+<img width="731" height="45" alt="image" src="https://github.com/user-attachments/assets/d1419a45-fb5b-45b4-8d91-c42cbc566138" />## Parte 1 — Contraseñas robustas con PAM
 
 ### Paso 1 instalar pwquality
 
@@ -54,5 +54,95 @@ Explicación
 - -m 1: obliga a esperar al menos un día entre cambios
 - -M 60 o -M 90: establece el número máximo de días de validez
 - -W 7: avisa al usuario siete días antes de que caduque
+
+### Paso 8. Comprobar la política de contraseñas de root
+<img width="391" height="92" alt="image" src="https://github.com/user-attachments/assets/966c6d04-24dd-479b-a020-bdde4f37679b" />
+
+Después comprobamos que tenemos activado el parámetro enforce_for_root
+grep -n '^enforce_for_root' /etc/security/pwquality.conf
+Este parámetro hace que las contraseñas establecidas por root también tengan que cumplir los requisitos de calidad
+
+<img width="731" height="45" alt="image" src="https://github.com/user-attachments/assets/8122daf6-b09e-4983-9a83-209e449a66ea" />
+
+## Parte 2 — Configuración de MFA con Google Au
+<img width="392" height="70" alt="image" src="https://github.com/user-attachments/assets/d2b6af9d-2fb2-4887-a746-0ca39d14a1a1" />
+
+<img width="898" height="947" alt="image" src="https://github.com/user-attachments/assets/9bd5512c-d84b-4be6-89f3-68038f2fe572" />
+
+Este comando inicia el asistente de configuración de autenticación TOTP.
+<img width="752" height="187" alt="image" src="https://github.com/user-attachments/assets/a861ed60-2486-4ae2-b33a-39585da85397" />
+
+
+
+## Parte 2 — MFA en SSH
+<img width="757" height="110" alt="image" src="https://github.com/user-attachments/assets/29540460-1d98-4c3a-a2fd-0df7ff98dc2d" />
+
+Con esta comprobación preparamos la activación del doble factor sin perder el acceso remoto a la máquina virtual.
+
+<img width="981" height="161" alt="image" src="https://github.com/user-attachments/assets/4436e067-e7fe-45b1-9f94-acb579d1cf3e" />
+
+Vamos a preparar la configuración para exigir contraseña + código temporal a los usuarios que pertenezcan al grupo mfa, sin quitarle el acceso al administrador linux.
+Crear el grupo MFA y añadir a Carlos
+<img width="552" height="110" alt="image" src="https://github.com/user-attachments/assets/eb572c40-0acc-49b7-8ed1-bed3a8be7096" />
+
+Hacer copias de seguridad de PAM y SSH
+Revisar dónde tendremos que modificar SSH:
+<img width="961" height="147" alt="image" src="https://github.com/user-attachments/assets/3254c63d-5cd3-4f46-857b-e569780366d4" />
+
+
+Revisar PAM y revisar el grupo MFA
+<img width="826" height="128" alt="image" src="https://github.com/user-attachments/assets/5ef6a5ec-dbb5-4937-bd73-64ed85956dd9" />
+
+Configurar PAM para el google au:
+<img width="953" height="932" alt="image" src="https://github.com/user-attachments/assets/32ffda31-b8d7-424c-8fc3-451ba9111fc1" />
+
+<img width="723" height="88" alt="image" src="https://github.com/user-attachments/assets/1283e1ab-ac32-4847-8224-e37444291170" />
+
+La primera línea comprueba si el usuario pertenece al grupo mfa. Si no pertenece, omite la comprobación siguiente
+La segunda línea utiliza Google Authenticator para solicitar el código temporal a los usuarios del grupo
+
+Comprobamos la configuración:
+<img width="952" height="88" alt="image" src="https://github.com/user-attachments/assets/757e8a32-6f62-4498-adf3-6726de492ac3" />
+
+Configurar SSH:
+sudo nano /etc/ssh/sshd_config, KbdInteractiveAuthentication no lo cambiamos a yes.
+
+<img width="717" height="73" alt="image" src="https://github.com/user-attachments/assets/c24f788e-beb8-4eff-acfe-86ec1b0e96a3" />
+
+Activamos la autenticación interactiva:
+KbdInteractiveAuthentication yes
+UsePAM yes
+PasswordAuthentication yes
+
+También añadimos una condición para exigir MFA únicamente a los miembros del grupo mfa
+
+<img width="512" height="82" alt="image" src="https://github.com/user-attachments/assets/0ca89577-f506-4316-8f45-785105b7bc63" />
+
+Explicación:
+- KbdInteractiveAuthentication yes: permite utilizar la autenticación interactiva de PAM.
+- UsePAM yes: activa la integración de SSH con PAM.
+- PasswordAuthentication yes: mantiene disponible la autenticación por contraseña para los usuarios que no pertenecen al grupo MFA.
+- Match Group mfa: aplica la configuración específica a los miembros del grupo.
+- AuthenticationMethods keyboard-interactive:pam: obliga a esos usuarios a autenticarse mediante PAM, donde se comprueban la contraseña y el código temporal.
+
+Comprobar la configuración del grupo MFA:
+
+<img width="572" height="290" alt="image" src="https://github.com/user-attachments/assets/ab5af318-1fc9-4940-bce6-f33f1ea66f4e" />
+
+<img width="911" height="1017" alt="image" src="https://github.com/user-attachments/assets/741b084b-150c-4859-91ea-4fc335e84772" />
+
+Activar MFA en SSH
+<img width="960" height="512" alt="image" src="https://github.com/user-attachments/assets/f04ae417-a352-4921-96ee-dd62de1c81c4" />
+
+
+
+
+
+
+
+
+
+
+
 
 
