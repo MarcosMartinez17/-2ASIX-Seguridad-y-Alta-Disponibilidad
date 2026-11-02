@@ -168,6 +168,85 @@ La primera línea corresponde a Carlos y la segunda a Linux.
 Esto demuestra que Carlos debe pasar por la autenticación interactiva de PAM, mientras que Linux conserva su configuración habitual
 
 
+## PARTE 3 Privilegios justos con sudo
+
+Paso 1. Comprobar los usuarios y el servicio
+<img width="450" height="142" alt="image" src="https://github.com/user-attachments/assets/9c0de8d9-0249-4b5c-8f69-c4021d971732" />
+
+Paso 1.2. Comprobar el recurso hmi_planta
+<img width="558" height="142" alt="image" src="https://github.com/user-attachments/assets/4214de71-3630-4820-9703-39dd61deefcc" />
+
+Paso 2. Crear el archivo de auditoría
+2.1. Crear el archivo
+<img width="783" height="90" alt="image" src="https://github.com/user-attachments/assets/e81858d3-fa7f-46bc-842a-566b8ca84275" />
+
+Explicación:
+- sudo tee: crea el archivo con permisos de administrador.
+- #!/bin/bash: indica que el archivo se ejecuta mediante Bash.
+- date: muestra la fecha y hora.
+- whoami: muestra el usuario que ejecuta el archivo.
+- EOF: marca el final del contenido que estamos escribiendo.
+
+2.2. Dar permisos de ejecución
+<img width="723" height="77" alt="image" src="https://github.com/user-attachments/assets/77231bf8-a55c-4d33-bf66-e0ecd11b0f99" />
+
+El permiso 755 significa que el propietario puede leer, escribir y ejecutar el archivo, mientras que los demás pueden leerlo y ejecutarlo, pero no modificarlo.
+
+2.3. Comprobar su funcionamiento
+<img width="690" height="63" alt="image" src="https://github.com/user-attachments/assets/dac046fa-1f8c-4604-9c6a-a52d9429f839" />
+
+
+Paso 3. Crear las reglas de sudo
+3.1. Abrir el archivo sudoers
+sudo visudo -f /etc/sudoers.d/torrent
+
+Explicación:
+- visudo: permite editar reglas de sudo y comprueba su sintaxis.
+- -f: indica el archivo que queremos editar.
+- /etc/sudoers.d/torrent: será nuestro archivo de permisos específico para la empresa.
+
+3.2. Añadir las reglas
+<img width="962" height="107" alt="image" src="https://github.com/user-attachments/assets/98b0bc41-6b9e-4e65-87f1-f8b5146160bb" />
+
+%ingenieria: se aplica a todos los miembros del grupo ingeniería.
+ALL=(root): permite ejecutar los comandos indicados como root.
+/usr/bin/systemctl: limita los comandos autorizados a las operaciones especificadas.
+%supervisores: se aplica al grupo supervisores.
+NOPASSWD: permite ejecutar el comando de auditoría sin introducir contraseña.
+
+Paso 3. Comprobar que las reglas son válidas
+<img width="920" height="170" alt="image" src="https://github.com/user-attachments/assets/cbabeac7-6ceb-48ee-bbe9-269550819d7f" />
+
+Paso 4. Corregir los permisos del archivo sudoers
+4.1. Cambiar los permisos a 0440
+<img width="610" height="67" alt="image" src="https://github.com/user-attachments/assets/ce7b7f75-38d3-40dc-9261-b34cc23732b7" />
+
+chown root:root: establece a root como propietario y grupo del archivo
+chmod 440: permite que el propietario y el grupo lean el archivo, pero nadie pueda modificarlo mediante permisos normales
+
+4.2. Comprobar los permisos
+<img width="608" height="147" alt="image" src="https://github.com/user-attachments/assets/43337b96-d863-4039-8563-2e7b39bf208d" />
+
+
+Paso 5. Comprobar los privilegios de los tres grupos
+
+sudo -l: muestra los comandos que tiene permitidos un usuario.
+-U nestor: consulta los permisos del usuario Néstor.
+
+<img width="930" height="167" alt="image" src="https://github.com/user-attachments/assets/acf39ade-c23c-4cb9-8415-392d54cc03f9" />
+
+5.2. Comprobar al usuario Carlos (supervisores)
+<img width="946" height="170" alt="image" src="https://github.com/user-attachments/assets/1e5c574c-048d-49b4-9aed-2ab46d5c58b6" />
+Esto significa que Carlos puede ejecutar el archivo de auditoría como administrador sin introducir la contraseña de sudo.
+
+5.3. Comprobar al usuario Alberto (operarios)
+<img width="538" height="53" alt="image" src="https://github.com/user-attachments/assets/70cdbb3d-9611-43f1-b831-d239eef3d775" />
+
+Alberto no tendrá autorizaciones administrativas adicionales.
+
+
+
+
 
 
    
