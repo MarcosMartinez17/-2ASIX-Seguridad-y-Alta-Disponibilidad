@@ -244,6 +244,38 @@ Esto significa que Carlos puede ejecutar el archivo de auditoría como administr
 
 Alberto no tendrá autorizaciones administrativas adicionales.
 
+Paso 6. Comprobar que Alberto no puede utilizar sudo
+6.1. Cambiar al usuario Alberto
+6.2. Intentar reiniciar el servicio
+<img width="563" height="88" alt="image" src="https://github.com/user-attachments/assets/400adb48-1616-4fbc-b483-f865bf049622" />
+
+Paso 7. Comprobar el registro del intento de sudo
+<img width="963" height="726" alt="image" src="https://github.com/user-attachments/assets/76960f67-4792-4b36-a817-99bbba7e8ccd" />
+
+tail -n 20: muestra las últimas 20 líneas del registro.
+/var/log/auth.log: contiene eventos relacionados con autenticación y uso de sudo, cuando Ubuntu tiene habilitado ese registro.
+journalctl: permite consultar los registros almacenados por systemd.
+_COMM=sudo: filtra los eventos del proceso sudo.
+
+Paso 7.1. Buscar los registros de Alberto
+<img width="690" height="51" alt="image" src="https://github.com/user-attachments/assets/2c221125-c254-4ce4-b8f9-6e28bb0709c3" />
+
+Explicación:
+- grep -i 'alberto': busca las entradas relacionadas con Alberto.
+- tail -n 15: muestra las últimas 15 coincidencias.
+
+Paso 8. Comprobar que Carlos puede ejecutar la auditoría sin contraseña
+8.1. Entrar como Carlos
+
+<img width="351" height="65" alt="image" src="https://github.com/user-attachments/assets/7ee269d9-f7ac-4e1f-8291-8e3dac129b2b" />
+
+8.2. Ejecutar la auditoría sin contraseña
+<img width="673" height="50" alt="image" src="https://github.com/user-attachments/assets/8fcd29e7-a523-40a2-b181-9df26426f6ab" />
+
+
+
+
+
 
 
 
