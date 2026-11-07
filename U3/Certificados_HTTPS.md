@@ -223,7 +223,95 @@ De esta forma Apache utilizará el nuevo certificado público en lugar del certi
 
 ### Paso 7 — Comprobar el certificado real
 
-curl -vI https://torrent-marcos.duckdns.org 2>&1 \
-    | grep -iE 'subject:|issuer:|expire|verify|HTTP/'
+<img width="638" height="275" alt="image" src="https://github.com/user-attachments/assets/fd2dc0b1-5cd5-48ea-8b3d-e5a55d5a725f" />
+
+En la salida comprobamos que:
+El certificado pertenece a torrent-marcos.duckdns.org.
+El emisor es Let's Encrypt.
+El certificado se valida correctamente.
+La conexión devuelve HTTP/1.1 200 OK.
+
+<img width="925" height="320" alt="image" src="https://github.com/user-attachments/assets/7cf32648-4ab2-49a5-a547-8e7cddfeed96" />
+
+### Paso 8 — Ver la cadena de confianza
+
+openssl s_client -connect torrent-marcos.duckdns.org:443 \
+    -servername torrent-marcos.duckdns.org </dev/null 2>/dev/null \
+    | grep -E ' s:| i:|Verify return code'
+
+<img width="481" height="67" alt="image" src="https://github.com/user-attachments/assets/31f5dc84-ed2e-4a6d-86fc-5e056e390bbf" />
+
+<img width="507" height="413" alt="image" src="https://github.com/user-attachments/assets/f5e84ded-c2ca-4b69-abea-f051ac407ddb" />
+
+## Paso 9 — Comprobar la renovación automática
+
+<img width="952" height="228" alt="image" src="https://github.com/user-attachments/assets/1331632d-2f25-47ea-84be-aba5109c69f4" />
+
+De esta forma podemos comprobar la tarea automática de renovación y la información del certificado gestionado por acme.sh.
+
+También podemos ver la fecha de creación del certificado y la próxima fecha prevista para su renovación.
+
+Por tanto, acme.sh ha quedado configurado para comprobar y renovar automáticamente el certificado cuando sea necesario.
+
+## 2.3 Comparamos las dos situaciones
+
+| Pregunta | CA propia de Torrent S.L. | Let’s Encrypt |
+|---|---|---|
+| **¿Quién firma el certificado?** | Nuestra propia CA de Torrent S.L. | Let’s Encrypt |
+| **¿El navegador lo acepta sin hacer nada?** | No | Sí |
+| **¿Qué tuviste que hacer para que confiara?** | Importar `ca.crt` y comprobar su huella SHA-256 | Nada, el navegador ya confía en Let's Encrypt |
+| **Validez del certificado del servidor** | 365 días | 90 días aproximadamente |
+| **Coste y esfuerzo de renovarlo** | Hay que renovarlo y gestionarlo nosotros manualmente | Renovación automática mediante `acme.sh` y `cron` |
+| **¿Qué se comprueba antes de firmar?** | Nosotros firmamos la CSR con nuestra CA | Let's Encrypt comprueba que controlamos el dominio mediante DNS-01 |
+| **¿Valdría para un servidor sin Internet?** | Sí | No, necesita Internet para obtener y renovar el certificado |
+
+
+## 3. Preguntas finales
+
+### 1. ¿Por qué el navegador confía en Let’s Encrypt y no en la CA de Torrent S.L.?
+
+Porque Let’s Encrypt ya está incluida entre las autoridades de confianza del navegador y del sistema.
+La CA de Torrent S.L. la hemos creado nosotros, así que hay que importarla manualmente para que el navegador confíe en ella.
+
+### 2. ¿Por qué los certificados de Let’s Encrypt duran solo 90 días?
+
+Porque una duración corta reduce el tiempo de riesgo si alguien roba la clave privada del servidor.
+Además, la renovación se hace automáticamente con `acme.sh`.
+
+### 3. ¿Qué CA usarías en una web interna sin Internet y en una web pública?
+
+Para una web interna sin Internet usaría una **CA propia**.
+Para una web pública usaría **Let’s Encrypt**, porque los navegadores ya confían en ella.
+
+### 4. ¿Qué ataques no impide HTTPS?
+
+HTTPS no impide, por ejemplo:
+- Que un atacante robe una contraseña mediante phishing.
+- Que el servidor tenga malware o una vulnerabilidad.
+HTTPS protege principalmente la información mientras viaja por la red.
+
+### 5. ¿Una empresa de 3 personas montaría una CA propia?
+
+Normalmente no, porque requiere mantenimiento y gestión.
+Tiene más sentido cuando hay muchos servicios internos, dispositivos o una VPN y se necesita controlar los certificados de forma privada.
+
+## 4. Limpieza al terminar la sesión
+
+<img width="776" height="557" alt="image" src="https://github.com/user-attachments/assets/0c15b85e-c617-409d-9dbc-c6d4bf90274f" />
+
+<img width="495" height="310" alt="image" src="https://github.com/user-attachments/assets/92232644-97eb-468e-bfea-e530e4034b83" />
+
+De esta forma evitamos dejar nuestra CA de pruebas instalada como una autoridad de confianza en el equipo después de terminar la práctica.
+
+
+
+
+
+
+
+
+
+
+
 
 
