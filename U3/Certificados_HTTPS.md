@@ -159,8 +159,71 @@ No es lo más seguro.
 Si un atacante compromete el servidor web, también podría acceder a la clave privada de la CA.
 En un entorno real, la CA debería estar separada y mejor protegida que el servidor web.
 
+## Parte 2 — certificado real con Let’s Encrypt usando DuckDNS + acme.sh.
+
+### Paso 1 — Crear el subdominio en DuckDNS
+
+<img width="1582" height="526" alt="image" src="https://github.com/user-attachments/assets/5dce82a6-88a2-4196-bd81-72ecd9f546f1" />
+
+<img width="1486" height="295" alt="image" src="https://github.com/user-attachments/assets/720bd51e-0c1b-477e-b8e6-55d8655feec5" />
+
+<img width="565" height="53" alt="image" src="https://github.com/user-attachments/assets/dae66e47-3da3-4699-9aee-18d435d00b3f" />
 
 
+### Paso 2 — instalar acme.sh
 
+<img width="726" height="160" alt="image" src="https://github.com/user-attachments/assets/f7223ae6-2116-441c-b374-ddbabf161c2a" />
+
+<img width="766" height="92" alt="image" src="https://github.com/user-attachments/assets/0c4d7b60-3c27-42f9-937c-c360b6ea321b" />
+
+Finalmente comprobamos que se ha creado el directorio de acme.sh y que existe una tarea automática en cron:
+
+<img width="782" height="87" alt="image" src="https://github.com/user-attachments/assets/559742d3-ee2e-4838-becd-812d41893d48" />
+
+acme.sh será la herramienta que utilizaremos para solicitar y renovar automáticamente el certificado de Let's Encrypt.
+
+### Paso 3 — Elegir Let’s Encrypt como CA
+Configuramos acme.sh para utilizar Let's Encrypt como autoridad de certificación por defecto:
+
+<img width="950" height="48" alt="image" src="https://github.com/user-attachments/assets/0bd54eb4-0692-4698-87dc-be5470197524" />
+
+Por tanto, los certificados que solicitemos a partir de ahora serán emitidos por Let's Encrypt.
+
+### Paso 4 — Solicitar el certificado con DNS-01
+
+Guardamos el token de DuckDNS en una variable de entorno y solicitamos el certificado:
+
+<img width="957" height="546" alt="image" src="https://github.com/user-attachments/assets/b652dc64-e78f-4d07-892c-16e6c1540b2e" />
+
+Durante el proceso, acme.sh crea automáticamente un registro TXT en DuckDNS para demostrar a Let's Encrypt que controlamos el dominio.
+
+Let's Encrypt verifica el registro DNS y, si todo es correcto, firma el certificado.
+También se generaron el certificado, la clave privada y la cadena completa del dominio.
+El token de DuckDNS y la clave privada no deben publicarse ni subirse a GitHub.
+
+### Paso 5 — instalar el certificado donde Apache pueda usarlo.
+
+<img width="945" height="242" alt="image" src="https://github.com/user-attachments/assets/a205247d-f435-4af9-8ce0-9b24511bb413" />
+
+<img width="512" height="85" alt="image" src="https://github.com/user-attachments/assets/3277e714-d30c-41d0-82c5-d7afb7dcea5c" />
+
+Creamos una carpeta donde Apache utilizará el certificado de Let's Encrypt:
+Después instalamos la clave privada y la cadena completa del certificado:
+acme.sh también guarda el comando de recarga de Apache para poder aplicarlo automáticamente cuando renueve el certificado.
+
+### Paso 6 — cambiar Apache al certificado de Let’s Encrypt.
+
+<img width="932" height="45" alt="image" src="https://github.com/user-attachments/assets/62ca45ba-9dde-4a5a-8b8d-87e238035db5" />
+
+cambiamos las rutas para utilizar el certificado de Let's Encrypt:
+
+<img width="581" height="77" alt="image" src="https://github.com/user-attachments/assets/8d9fe7cc-3cb2-43e6-b8b8-1a191a17dcd7" />
+
+De esta forma Apache utilizará el nuevo certificado público en lugar del certificado firmado por nuestra CA privada.
+
+### Paso 7 — Comprobar el certificado real
+
+curl -vI https://torrent-marcos.duckdns.org 2>&1 \
+    | grep -iE 'subject:|issuer:|expire|verify|HTTP/'
 
 
