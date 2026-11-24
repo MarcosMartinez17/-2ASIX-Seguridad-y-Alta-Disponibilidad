@@ -42,4 +42,22 @@ Entrega 0. Captura del ping fallando (sin ruta o sin respuesta) y de ip -br a en
 
 
 Maquina cliente: Cliente-SAD
+usuario: vboxuser contra:vboxuser
+
+<img width="970" height="88" alt="image" src="https://github.com/user-attachments/assets/73693462-6cf3-4082-b260-c73e34199247" />
+
+Maquina dmz-vpn: dmz-vpn_SERVER
+usuario: dmz-server contra:vboxuser
+
+<img width="961" height="106" alt="image" src="https://github.com/user-attachments/assets/42ca8127-429f-4759-964f-024a3ded73c6" />
+
+Maquina srv-hmi
+usuario: srv-hmi contra: vboxuser
+
+<img width="950" height="205" alt="image" src="https://github.com/user-attachments/assets/c7ad3fba-54e4-4cf8-bd6f-6228362fbcbf" />
+
+
+
+
+
 
