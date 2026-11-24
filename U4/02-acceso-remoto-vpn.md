@@ -56,6 +56,12 @@ usuario: srv-hmi contra: vboxuser
 
 <img width="950" height="205" alt="image" src="https://github.com/user-attachments/assets/c7ad3fba-54e4-4cf8-bd6f-6228362fbcbf" />
 
+Maquina srv-ca
+usu srv-ca contra: vboxuser
+
+<img width="948" height="85" alt="image" src="https://github.com/user-attachments/assets/3ffaadc2-5e5a-417d-84e2-dc28bc433715" />
+
+
 
 
 
