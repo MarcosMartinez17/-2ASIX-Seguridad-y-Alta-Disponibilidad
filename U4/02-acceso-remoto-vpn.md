@@ -31,14 +31,7 @@ Para que srv-hmi sepa cómo contestar a los clientes de la VPN, dile que la red 
 
 sudo ip route add 10.8.0.0/24 via 10.0.20.1
 
-### 0.4 Antes de montar nada: sin VPN no se llega
-Desconecta los adaptadores de gestión de todas las máquinas (en VirtualBox, desmarca «Cable conectado»). Si no lo haces, el cliente podría llegar al HMI por esa vía y la prueba no valdría.
 
-Volverás a conectarlos solo para instalar paquetes y copiar ficheros (Partes 1, 2, 4 y 6.3). Antes de la Parte 5, déjalos desconectados otra vez.
-
-Desde el cliente:
-ping -c 2 10.0.20.20
-Entrega 0. Captura del ping fallando (sin ruta o sin respuesta) y de ip -br a en el cliente.
 
 
 Maquina cliente: Cliente-SAD
@@ -61,7 +54,16 @@ usu srv-ca contra: vboxuser
 
 <img width="948" height="85" alt="image" src="https://github.com/user-attachments/assets/3ffaadc2-5e5a-417d-84e2-dc28bc433715" />
 
+### 0.4 Antes de montar nada: sin VPN no se llega
+Desconecta los adaptadores de gestión de todas las máquinas (en VirtualBox, desmarca «Cable conectado»). Si no lo haces, el cliente podría llegar al HMI por esa vía y la prueba no valdría.
 
+Volverás a conectarlos solo para instalar paquetes y copiar ficheros (Partes 1, 2, 4 y 6.3). Antes de la Parte 5, déjalos desconectados otra vez.
+
+Desde el cliente:
+ping -c 2 10.0.20.20
+Entrega 0. Captura del ping fallando (sin ruta o sin respuesta) y de ip -br a en el cliente.
+
+<img width="622" height="123" alt="Captura de pantalla 2026-11-24 195142" src="https://github.com/user-attachments/assets/9ac14f68-63e7-4809-858b-d7973120b594" />
 
 
 
