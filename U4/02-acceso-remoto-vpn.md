@@ -152,3 +152,149 @@ Verificamos:
 <img width="703" height="45" alt="image" src="https://github.com/user-attachments/assets/75f8ad47-a73e-4d18-bf3b-9971a6ff4f61" />
 
 En `srv-ca` se ha importado la peticion `vpn-gw.req` enviada por la pasarela y se ha firmado como certificado de servidor. Durante la firma se ha añadido el nombre `vpn.torrent.local` y la direccion `203.0.113.10` como Subject Alternative Name. Como resultado se ha generado el certificado `pki/issued/vpn-gw.crt`, valido para el papel de servidor. Finalmente se comprobara la cadena de confianza con `openssl verify` para confirmar que el certificado ha sido firmado correctamente por la CA.
+
+## 1.4 Certificado del cliente (el técnico)
+
+### Paso A - Generar la clave y la peticion
+Maquina Cliente
+1. Instalar Easy-RSA y OpenVPN
+sudo apt update
+sudo apt install -y easy-rsa openvpn
+
+2. Preparar Easy-RSA
+make-cadir ~/easy-rsa
+cd ~/easy-rsa
+./easyrsa version
+
+Despues inicializa la PKI:
+./easyrsa init-pki
+
+<img width="477" height="90" alt="image" src="https://github.com/user-attachments/assets/b83824a1-9f2b-4684-97d6-51e0adbe6304" />
+
+3. Generar el certificado del tecnico
+./easyrsa gen-req tecnico01 nopass
+
+<img width="475" height="50" alt="image" src="https://github.com/user-attachments/assets/8424d0ff-5c25-4306-9c22-984cdf9e0957" />
+
+4. Comprobar los archivos
+
+<img width="617" height="77" alt="image" src="https://github.com/user-attachments/assets/60fc293b-c213-49bd-a523-7568ae340adc" />
+
+En la maquina `Cliente` se ha instalado Easy-RSA y OpenVPN. Despues se ha inicializado la PKI y se ha generado la clave privada `tecnico01.key` junto con la peticion de firma `tecnico01.req`, utilizando `tecnico01` como Common Name. La clave privada permanece en el Cliente y solo se enviara la peticion a `srv-ca` para obtener el certificado firmado.
+
+### Paso B - Enviar tecnico01.req a srv-ca
+Maquinas encendidas: Cliente y srv-ca
+
+Maquina: Cliente
+En el 1.3 copiamos vpn-gw.req desde dmz-vpn a srv-ca usando: scp ~/easy-rsa/pki/reqs/vpn-gw.req srv-ca@10.0.20.30:/tmp/
+
+Funciono porque ambas maquinas estan conectadas a net-lan
+Ahora es diferente: Cliente esta en net-externa y srv-ca en net-lan, por lo que no pueden comunicarse directamente.
+Utilizaremos el adaptador de gestion para copiar archivos
+
+La forma mas rapida es conectar temporalmente Cliente a net-lan mediante un tercer adaptador y quitarlo despues de copiar el archivo.
+
+Despues encenemos la maquina le asginamos una ip:
+scp ~/easy-rsa/pki/reqs/tecnico01.req srv-ca@10.0.20.30:/tmp/
+
+<img width="776" height="127" alt="image" src="https://github.com/user-attachments/assets/e515bf7c-f963-4d57-968b-4e859a4385e1" />
+
+Maquina: srv-ca, comprobamos el archivo
+
+<img width="523" height="57" alt="image" src="https://github.com/user-attachments/assets/db5ffa76-2a7c-40fa-8bba-b0fca8b9c368" />
+
+Ahora que tenemos el archivo ya quitamos el adaptador que añadimos al cliente
+
+### Paso C · En srv-ca: importar y firmar como client.
+
+1. Importar la peticion
+Maquina: srv-ca
+
+<img width="631" height="125" alt="image" src="https://github.com/user-attachments/assets/05a00dc1-69f4-4e39-9f39-2cfb756fe667" />
+
+2. Firmar el certificado
+
+./easyrsa sign-req client tecnico01
+
+3. Comprobar el certificado
+
+<img width="717" height="72" alt="image" src="https://github.com/user-attachments/assets/449ea743-20fa-46e9-8a84-33c5f36ca1a0" />
+
+Se ha transferido la peticion `tecnico01.req` desde Cliente hasta `srv-ca` para solicitar su firma. Para ello se ha utilizado temporalmente una conexion a `net-lan`, que se ha retirado despues de la transferencia para mantener el aislamiento entre redes. Posteriormente, en `srv-ca`, se ha importado la peticion y se ha firmado como certificado de cliente mediante Easy-RSA. El certificado generado es `tecnico01.crt`, mientras que la clave privada `tecnico01.key` permanece exclusivamente en Cliente. La validez de la firma se comprueba utilizando OpenSSL y el certificado de la CA.
+
+### Parte 1.4 - Comprobar el uso del certificado
+
+<img width="810" height="50" alt="image" src="https://github.com/user-attachments/assets/c34cca63-f251-4fe1-be26-f4caaf4677a8" />
+
+Debe aparecer: TLS Web Client Authentication
+
+<img width="852" height="66" alt="image" src="https://github.com/user-attachments/assets/53f67749-b159-4d73-8184-a1a1d002b199" />
+
+### Comprobar los roles
+Estos dos primeros deben fallar, porque los certificados se utilizan para el papel contrario.
+
+<img width="837" height="70" alt="image" src="https://github.com/user-attachments/assets/a58b29f8-3135-45b8-912a-3a252eed3412" />
+
+<img width="873" height="63" alt="image" src="https://github.com/user-attachments/assets/ec57ec96-b6de-46ae-bb11-e1bf1c8f7ff8" />
+
+Estos debem funcionar:
+
+<img width="860" height="38" alt="image" src="https://github.com/user-attachments/assets/aacda46c-a34d-4625-a7aa-f24ab32cf0c0" />
+
+<img width="840" height="47" alt="image" src="https://github.com/user-attachments/assets/de486570-da59-4756-9735-71bb859a03d6" />
+
+### 1.5 Lista de revocación (CRL) inicial
+
+La CRL sirve para indicar que certificados han sido revocados y ya no deben aceptarse en la VPN.
+Paso 1. Generar la CRL
+
+<img width="575" height="167" alt="image" src="https://github.com/user-attachments/assets/1b055057-8f96-4d03-b026-ff7220f45882" />
+
+LAS CONTRASEÑAS DE LAS CA ES 123456
+Paso 2. Comprobar la CRL
+
+<img width="645" height="45" alt="image" src="https://github.com/user-attachments/assets/3f64527e-79e9-49c5-ab11-be556a7de3d1" />
+
+En la maquina `srv-ca` se ha generado la lista de revocacion de certificados (CRL) mediante Easy-RSA. Esta lista permite identificar los certificados que hayan sido revocados para impedir su utilizacion en la VPN. Se ha creado el archivo `pki/crl.pem` y se ha comprobado su fecha de caducidad mediante OpenSSL. La CRL debera renovarse antes de que caduque para evitar problemas con las conexiones VPN.
+
+<img width="473" height="32" alt="image" src="https://github.com/user-attachments/assets/db89c8c4-a90c-46fb-874e-740e2bf1ddbc" />
+
+### 1.6 Qué se copia a cada máquina
+Paso 1. Copiar los certificados a dmz-vpn
+Maquinas encendidas: srv-ca y dmz-vpn.
+
+Maquina: dmz-vpn:
+mkdir -p ~/certificados-vpn
+
+Ahora copia los tres archivos desde srv-ca:
+
+<img width="746" height="148" alt="image" src="https://github.com/user-attachments/assets/e8c60e8e-99df-49e3-9635-9ad7fcf09e8c" />
+
+Comprobar los archivos:
+
+<img width="532" height="95" alt="image" src="https://github.com/user-attachments/assets/ec04881e-ebcd-45db-a50b-f6313ae4cb55" />
+
+Maquina: Cliente:
+Poner otra vez el adaptador 3
+mkdir -p ~/certificados-vpn
+
+Copia de archivos:
+
+<img width="826" height="97" alt="image" src="https://github.com/user-attachments/assets/026c3a12-cc2f-4e54-9ac8-5d25864e57c4" />
+
+Comprobar los archivos
+
+<img width="522" height="66" alt="image" src="https://github.com/user-attachments/assets/ee0507a6-c9d4-4ee9-aae2-1fccf3c4c3b0" />
+
+### Ultimo paso: apagar la CA
+La apagamos porque contiene ca.key, la clave privada de la autoridad de certificacion. Solo volveremos a encenderla cuando necesitemos firmar o revocar certificados.
+
+
+
+
+
+
+
+
+
+
