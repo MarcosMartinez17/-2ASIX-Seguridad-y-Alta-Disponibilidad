@@ -460,6 +460,42 @@ Maquina: Cliente
 cd ~/vpn-torrent
 sudo openvpn --config cliente.conf
 
+<img width="961" height="191" alt="image" src="https://github.com/user-attachments/assets/575d1e6b-8fa1-4720-908f-8e80190fa6d8" />
+
+<img width="448" height="27" alt="image" src="https://github.com/user-attachments/assets/983ae7d9-1d84-4a05-8d72-8ff61b241f43" />
+
+Se han desconectado los adaptadores NAT de gestion de Cliente, dmz-vpn y srv-hmi para comprobar la conexion utilizando unicamente las redes del laboratorio. Desde Cliente se ha iniciado OpenVPN con el archivo cliente.conf. La conexion se ha establecido correctamente, validando el certificado del servidor y creando la interfaz tun0 con la direccion 10.8.0.2/24. Tambien se ha recibido la ruta hacia la red interna 10.0.20.0/24. Finalmente, el mensaje Initialization Sequence Completed confirma que el tunel VPN esta funcionando.
+
+## Parte 5 · Comprobar que funciona
+Como abrir otra terminal en Cliente
+Maquina: Cliente
+1. Deja OpenVPN funcionando en la terminal actual.
+2. Pulsa Ctrl + Alt + F2 para abrir otra consola.
+
+Paso 1 - Comprobar la interfaz VPN y las rutas
+ip -br a show tun0
+
+<img width="616" height="60" alt="image" src="https://github.com/user-attachments/assets/48e5eaa1-8828-4a5b-974c-b2a78c05422b" />
+
+ip route
+
+<img width="561" height="82" alt="image" src="https://github.com/user-attachments/assets/0eaa2494-4e83-4054-b4e8-2bbfe17b6aaa" />
+
+¿Que estamos comprobando?
+Que el Cliente tiene una interfaz VPN activa y que el servidor le ha enviado la ruta necesaria para acceder a la red interna de Torrent S.L.
+
+En la maquina Cliente, con la conexion OpenVPN activa y los adaptadores NAT de gestion desconectados, se ha comprobado la interfaz virtual tun0 y la tabla de rutas. La interfaz tiene asignada una direccion de la red VPN 10.8.0.0/24 y se ha recibido la ruta hacia la red interna 10.0.20.0/24 a traves del tunel. Esto permite enviar el trafico destinado a la LAN mediante la VPN en lugar de utilizar una conexion directa.
+
+Paso 2 - Comprobar la conexion con la pasarela
+
+<img width="527" height="147" alt="image" src="https://github.com/user-attachments/assets/95328b9d-f63b-47ee-ba1f-893b74911281" />
+
+Desde la maquina Cliente se ha realizado un ping a 10.8.0.1, que corresponde a la interfaz VPN de dmz-vpn. Se han recibido las dos respuestas correctamente, con un 0% de paquetes perdidos. Esto demuestra que el tunel VPN permite la comunicacion entre el Cliente y la pasarela.
+
+Paso 3 - Comprobar el acceso al HMI
+
+<img width="527" height="148" alt="image" src="https://github.com/user-attachments/assets/413afbd9-bd23-48ec-a4dd-6bb1e6872c59" />
+
 
 
 
