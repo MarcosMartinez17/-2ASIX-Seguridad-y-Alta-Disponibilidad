@@ -496,9 +496,16 @@ Paso 3 - Comprobar el acceso al HMI
 
 <img width="527" height="148" alt="image" src="https://github.com/user-attachments/assets/413afbd9-bd23-48ec-a4dd-6bb1e6872c59" />
 
+Desde la maquina Cliente se ha realizado un ping a 10.0.20.20, correspondiente a srv-hmi. Se han recibido dos respuestas con un 0% de paquetes perdidos. Esto demuestra que el trafico atraviesa correctamente el tunel VPN, pasa por dmz-vpn y llega a la red interna, manteniendo los adaptadores NAT de gestion desconectados.
 
+Paso 4 - Comprobar el acceso por SSH
+ssh srv-hmi@10.0.20.20
 
+<img width="666" height="540" alt="image" src="https://github.com/user-attachments/assets/22d8bcfb-9ecf-4e6e-8a09-6834df06659c" />
 
+Desde la maquina Cliente se ha establecido una conexion SSH con srv-hmi mediante la direccion 10.0.20.20. El acceso se ha realizado correctamente utilizando las credenciales del usuario del servidor. Esta prueba confirma que el cliente puede utilizar el servicio SSH del HMI a traves del tunel VPN, mientras los adaptadores de gestion permanecen desconectados.
+
+## Parte 6 · Pruebas de ataque y defensa
 
 
 
