@@ -290,8 +290,175 @@ Comprobar los archivos
 La apagamos porque contiene ca.key, la clave privada de la autoridad de certificacion. Solo volveremos a encenderla cuando necesitemos firmar o revocar certificados.
 
 
+## Parte 2 · La pasarela dmz-vpn
+### Parte 2.1 - Instalar OpenVPN y activar el reenvio de paquetes
+
+sudo apt update
+sudo apt install -y openvpn nftables
+openvpn --version | head -1
+
+Despues activa el reenvio:
+
+echo "net.ipv4.ip_forward=1" | sudo tee /etc/sysctl.d/99-forward.conf
+sudo sysctl --system
+sysctl net.ipv4.ip_forward
+
+<img width="416" height="61" alt="image" src="https://github.com/user-attachments/assets/3cdf5899-10a0-4296-b70d-a5de9ea1bb0a" />
+
+En dmz-vpn se ha comprobado la instalacion de OpenVPN y nftables. Despues se ha activado el reenvio de paquetes IPv4 mediante /etc/sysctl.d/99-forward.conf, permitiendo que la pasarela pueda dirigir trafico entre la VPN y la red interna. Se ha comprobado que net.ipv4.ip_forward tiene el valor 1.
+
+### 2.2 - Colocar los certificados de OpenVPN.
+Crear la carpeta de OpenVPN
+sudo mkdir -p /etc/openvpn/server
+
+Copiar los certificados
+sudo cp ~/certificados-vpn/ca.crt /etc/openvpn/server/
+sudo cp ~/certificados-vpn/vpn-gw.crt /etc/openvpn/server/
+sudo cp ~/certificados-vpn/crl.pem /etc/openvpn/server/
+
+Ahora copia la clave privada que generamos en esta misma maquina:
+sudo cp ~/easy-rsa/pki/private/vpn-gw.key /etc/openvpn/server/
+
+Configurar los permisos
+sudo chmod 600 /etc/openvpn/server/vpn-gw.key
+sudo chmod 644 /etc/openvpn/server/crl.pem
+
+La clave privada solo podra leerla root, mientras que la lista de revocacion podra ser leida por OpenVPN cuando funcione sin privilegios.
+
+<img width="525" height="117" alt="image" src="https://github.com/user-attachments/assets/1621f565-a112-4d9a-9d30-cd9468a06bf0" />
+
+En la maquina dmz-vpn se ha creado la carpeta /etc/openvpn/server/ y se han copiado los certificados necesarios para configurar OpenVPN: ca.crt, vpn-gw.crt, vpn-gw.key y crl.pem. Se han establecido permisos restrictivos para la clave privada, permitiendo su lectura solo a root, mientras que la lista de revocacion queda disponible para que OpenVPN pueda comprobar los certificados revocados. La clave privada vpn-gw.key permanece en la maquina donde se genero.
 
 
+### Parte 2.3 - Clave de proteccion del canal de control
+Vamos a generar ta.key, una clave compartida que OpenVPN utilizara para proteger el canal de control mediante tls-crypt.
+
+Paso 1 - Generar la clave
+
+<img width="648" height="67" alt="image" src="https://github.com/user-attachments/assets/ebb97911-0cd5-416e-84be-e2ab298293f4" />
+
+Paso 2 - Comprobar
+
+<img width="632" height="35" alt="image" src="https://github.com/user-attachments/assets/d75cbee6-71c3-48e7-94ba-eeda94bd3350" />
+
+En la maquina dmz-vpn se ha generado la clave compartida ta.key mediante OpenVPN. Esta clave se utilizara con tls-crypt para cifrar y autenticar el canal de control, protegiendo el intercambio inicial de la conexion VPN. Tambien se han establecido permisos 600 para evitar que otros usuarios puedan leerla. Mas adelante se copiara de forma segura al Cliente, ya que ambos extremos necesitan utilizar la misma clave.
+
+### 2.4 - Configurar el servidor OpenVPN.
+En este paso vamos a crear el archivo server.conf, que indica a OpenVPN como debe funcionar la VPN.
+
+sudo nano /etc/openvpn/server/server.conf
+
+<img width="830" height="415" alt="image" src="https://github.com/user-attachments/assets/355e7cf7-903f-4a6c-8507-74c7e934dcf3" />
+
+En dmz-vpn se ha creado el archivo /etc/openvpn/server/server.conf para configurar el servidor OpenVPN. Se ha establecido el puerto UDP 1194 y la red del tunel 10.8.0.0/24. Tambien se ha añadido una ruta hacia la LAN 10.0.20.0/24 para que los clientes VPN puedan acceder a los recursos internos. Se han configurado los certificados, la clave ta.key para proteger el canal de control y la lista de revocacion crl.pem. Ademas, se han establecido los algoritmos de cifrado y la version minima de TLS.
+
+### Parte 2.5 - Arrancar y comprobar OpenVPN
+Paso 1 - Iniciar el servidor
+sudo systemctl enable --now openvpn-server@server
+sudo systemctl restart openvpn-server@server
+
+Paso 2 - Comprobar el estado del servicio
+
+<img width="888" height="87" alt="image" src="https://github.com/user-attachments/assets/cfc83917-c382-470f-b91d-7250e53d56d7" />
+
+Paso 3 - Comprobar la interfaz VPN
+
+<img width="653" height="50" alt="image" src="https://github.com/user-attachments/assets/c9a4dd9f-3dea-4b23-b279-b8b4dc0aef1c" />
+
+Paso 4 - Comprobar el puerto OpenVPN
+
+<img width="872" height="48" alt="image" src="https://github.com/user-attachments/assets/f4ea2198-b65e-4c64-9425-217325f824b5" />
+
+Paso 5 - Comprobar los registros
+
+<img width="860" height="420" alt="image" src="https://github.com/user-attachments/assets/8cc4e43b-087f-45e5-9c7c-c18d2948e945" />
+
+En la maquina dmz-vpn se ha iniciado y habilitado el servicio OpenVPN. Se ha comprobado que el servidor ha creado correctamente la interfaz virtual tun0 con la direccion 10.8.0.1/24 y que esta escuchando conexiones en el puerto UDP 1194. Ademas, se han revisado los registros del servicio, donde aparece el mensaje Initialization Sequence Completed, confirmando que OpenVPN se ha iniciado correctamente y esta preparado para aceptar conexiones VPN.
+
+## Parte 3 · Cortafuegos mínimo en la pasarela
+Paso 1 - Crear la configuracion del cortafuegos
+sudo nano /etc/nftables.conf
+
+<img width="786" height="540" alt="image" src="https://github.com/user-attachments/assets/bb288306-ff3a-4559-a27a-b90ad04eea4c" />
+
+Comprobar la sintaxis sin aplicar las reglas: sudo nft -c -f /etc/nftables.conf
+
+Paso 2: Activar nftables
+Aplicar las reglas: sudo nft -f /etc/nftables.conf
+Activar el cortafuegos al arrancar: sudo systemctl enable --now nftables
+Comprobar las reglas:sudo nft list ruleset
+
+<img width="947" height="346" alt="image" src="https://github.com/user-attachments/assets/d19bea10-8c75-4b37-b1ed-24eee8b0102b" />
+
+### Parte 3 - Configuracion del cortafuegos
+
+En la maquina dmz-vpn se ha configurado el cortafuegos nftables mediante /etc/nftables.conf. Se ha establecido una politica de bloqueo por defecto para impedir conexiones no autorizadas. Se permite el puerto UDP 1194 para OpenVPN y SSH para la administracion de la pasarela. Desde el tunel VPN solo se permite el acceso por SSH y ping al servidor srv-hmi (10.0.20.20). Finalmente, se han aplicado las reglas y se ha comprobado su configuracion mediante sudo nft list ruleset.
+
+## Parte 4 · El cliente
+### 4.1 Colocar los ficheros
+Maquina: Cliente
+
+Crear la carpeta:
+mkdir -p ~/vpn-torrent
+cd ~/vpn-torrent
+
+Copiar los archivos que ya tenemos
+cp ~/easy-rsa/pki/private/tecnico01.key .
+cp ~/certificados-vpn/ca.crt .
+cp ~/certificados-vpn/tecnico01.crt .
+
+Comprobar
+
+<img width="520" height="106" alt="image" src="https://github.com/user-attachments/assets/3f8ff0d6-e565-40bb-a30c-57a61743ffae" />
+
+Todavia faltara ta.key, que copiaremos desde dmz-vpn en el siguiente paso.
+
+Que estamos haciendo?
+Estamos reuniendo en una carpeta los archivos que necesita el Cliente para identificarse ante el servidor VPN y comprobar que se conecta a la pasarela correcta
+
+Copiar ta.key al Cliente.
+Este archivo se creo en dmz-vpn y debe ser identico en las dos maquinas para que funcione la VPN
+Vamos a utilizar SCP. Como dmz-vpn y Cliente comparten net-externa
+
+Paso 2 - Transferir ta.key
+Maquina: dmz-vpn
+sudo cp /etc/openvpn/server/ta.key ~/ta.key
+sudo chown "$USER:$USER" ~/ta.key
+
+Enviar el archivo al Cliente:
+scp ~/ta.key vboxuser@203.0.113.50:~/vpn-torrent/ta.key
+
+<img width="910" height="185" alt="image" src="https://github.com/user-attachments/assets/0e011ff1-9549-46c7-b734-5b1258f1e093" />
+
+Comprobar y proteger los archivos
+Maquina: Cliente
+
+<img width="547" height="133" alt="image" src="https://github.com/user-attachments/assets/66f7040d-1ab4-4281-ad81-34fbafaf570b" />
+
+En la maquina Cliente se ha creado la carpeta ~/vpn-torrent y se han reunido los archivos necesarios para la conexion VPN: ca.crt, tecnico01.crt, tecnico01.key y ta.key. La clave ta.key se ha transferido de forma segura desde dmz-vpn mediante SCP. Finalmente, se han establecido permisos 600 para proteger las claves privadas y se ha comprobado que todos los archivos estan en la carpeta correcta.
+
+### 4.2 Configuración del cliente
+Maquina: Cliente
+Crear el archivo cliente.conf
+
+<img width="765" height="295" alt="image" src="https://github.com/user-attachments/assets/ed66636d-e574-4fd3-9a75-f5e704c25410" />
+
+Comprobar:
+
+<img width="532" height="140" alt="image" src="https://github.com/user-attachments/assets/dff20f7e-45e2-4edf-a58f-4ded33bf4f75" />
+
+### Parte 4.3 - Conectar a la VPN
+Paso 1 - Preparar las maquinas
+Encender estas 3 maquinas:
+- Cliente
+- dmz-vpn
+- srv-hmi
+Y desconectar el NAT de gestion
+
+Paso 2 - Conectar a OpenVPN
+Maquina: Cliente
+cd ~/vpn-torrent
+sudo openvpn --config cliente.conf
 
 
 
